@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit | نظام إدارة أعمال الكهرباء اليومي</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 20, 50, 0.08);
+            padding: 30px 35px;
+            margin: 20px 0;
+            transition: 0.2s;
+        }
+
+        /* الهيدر */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9eef4;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            background: #0b2b4f;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 8px 14px rgba(11, 43, 79, 0.2);
+        }
+
+        .logo-text h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0b2b4f;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            font-size: 14px;
+            font-weight: 500;
+            color: #5e7a9a;
+            letter-spacing: 0.3px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 26px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            background: white;
+            color: #1e3a5f;
+            border: 1.5px solid #d7e1ec;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+        }
+
+        .btn-primary {
+            background: #0b2b4f;
+            color: white;
+            border: none;
+            box-shadow: 0 10px 18px -8px rgba(11, 43, 79, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #153e6b;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1.5px solid #cbd9e9;
+        }
+
+        .btn-outline:hover {
+            background: #f0f6ff;
+            border-color: #0b2b4f;
+        }
+
+        .btn-sm {
+            padding: 8px 18px;
+            font-size: 13px;
+            border-radius: 40px;
+        }
+
+        /* الأقسام */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b2b4f;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #1d6fb8;
+            font-size: 22px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2ebf5;
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.04);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            border-color: #c4d9f0;
+        }
+
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex: 1 1 200px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c4b6e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-group input, .input-group select, .input-group textarea {
+            padding: 13px 16px;
+            border: 1.5px solid #dae5f0;
+            border-radius: 18px;
+            font-size: 15px;
+            font-family: 'Cairo', sans-serif;
+            background: #f9fcff;
+            transition: 0.2s;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #0b2b4f;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(11, 43, 79, 0.06);
+        }
+
+        /* قوائم الأعضاء */
+        .members-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .member-badge {
+            background: #eef5fd;
+            border-radius: 40px;
+            padding: 8px 20px 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #14365c;
+            border: 1px solid #c8dcf2;
+            transition: 0.1s;
+        }
+
+        .member-badge i {
+            color: #1d6fb8;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .member-badge .remove-member {
+            color: #b22234;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+        .member-badge .remove-member:hover {
+            opacity: 1;
+        }
+
+        .role-tag {
+            background: white;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            color: #2b5d8a;
+            border: 1px solid #b8d0e9;
+        }
+
+        /* مجموعة العمل */
+        .group-card {
+            border: 2px solid #d1e2f5;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fbfdff;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .group-name-input {
+            font-weight: 700;
+            font-size: 18px;
+            border: none;
+            background: transparent;
+            border-bottom: 2px dashed #aac4e0;
+            padding: 5px 8px;
+            color: #0b2b4f;
+            width: 200px;
+        }
+
+        .group-members-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+            min-height: 45px;
+        }
+
+        .member-chip {
+            background: #e1eefb;
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #b8d3ef;
+        }
+
+        .member-chip select {
+            border: none;
+            background: white;
+            border-radius: 30px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0b2b4f;
+            border: 1px solid #c3d7ed;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* جدول السيارات */
+        .car-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .car-table th {
+            background: #eef5fd;
+            padding: 14px 10px;
+            text-align: right;
+            font-weight: 700;
+            color: #1a3d61;
+            border-bottom: 2px solid #cfe0f0;
+        }
+
+        .car-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e6eef8;
+            vertical-align: middle;
+        }
+
+        /* الخصومات */
+        .discount-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 14px;
+        }
+
+        /* أزرار الإضافة */
+        .add-btn {
+            background: #e6f0fa;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            color: #0b2b4f;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #d0e3fa;
+        }
+
+        /* التقرير */
+        #report-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        /* للطباعة */
+        @media print {
+            body { background: white; padding: 0; }
+            .app-container { box-shadow: none; padding: 10px; }
+            .no-print { display: none !important; }
+            .card { break-inside: avoid; border: 1px solid #ccc; }
+        }
+
+        /* تجاوب */
+        @media (max-width: 700px) {
+            .app-container { padding: 18px; }
+            .app-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+    <!-- الهيدر -->
+    <div class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <div class="logo-text">
+                <h1>Circuit</h1>
+                <span>إدارة أعمال الكهرباء اليومية</span>
+            </div>
+        </div>
+        <div class="header-actions no-print">
+            <button class="btn btn-outline" id="resetDayBtn"><i class="fas fa-undo-alt"></i> يوم جديد</button>
+            <button class="btn btn-primary" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> تصدير PDF</button>
+        </div>
+    </div>
+
+    <!-- التاريخ والبيانات الأساسية -->
+    <div class="card">
+        <div class="section-title"><i class="fas fa-calendar-alt"></i> بيانات اليوم</div>
+        <div class="flex-row">
+            <div class="input-group">
+                <label><i class="fas fa-calendar"></i> التاريخ</label>
+                <input type="date" id="workDate">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-clock"></i> بداية العمل</label>
+                <input type="time" id="startTime" value="08:00">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-clock"></i> نهاية العمل</label>
+                <input type="time" id="endTime" value="17:00">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-user-tie"></i> مشرف عام اليوم</label>
+                <input type="text" id="supervisorName" placeholder="اسم المشرف العام">
+            </div>
+        </div>
+    </div>
+
+    <!-- إضافة الأعضاء (فنيين، مشرفين، مساعدين) -->
+    <div class="card">
+        <div class="section-title"><i class="fas fa-users"></i> فريق العمل</div>
+        <div class="flex-row">
+            <div class="input-group">
+                <label>اسم العضو</label>
+                <input type="text" id="memberName" placeholder="الاسم الثلاثي">
+            </div>
+            <div class="input-group">
+                <label>الدور</label>
+                <select id="memberRole">
+                    <option value="فني">فني كهرباء</option>
+                    <option value="مشرف">مشرف</option>
+                    <option value="مساعد">مساعد</option>
+                    <option value="سائق">سائق</option>
+                </select>
+            </div>
+            <button class="btn btn-outline btn-sm" id="addMemberBtn" style="margin-bottom: 2px;"><i class="fas fa-plus"></i> إضافة</button>
+        </div>
+        <div class="members-grid" id="membersList"></div>
+    </div>
+
+    <!-- تكوين المجموعات -->
+    <div class="card">
+        <div class="section-title"><i class="fas fa-layer-group"></i> مجموعات العمل والمهام</div>
+        <div id="groupsContainer"></div>
+        <button class="add-btn no-print" id="addGroupBtn"><i class="fas fa-plus-circle"></i> إضافة مجموعة جديدة</button>
+    </div>
+
+    <!-- ترتيب السيارات -->
+    <div class="card">
+        <div class="section-title"><i class="fas fa-car"></i> ترتيب السيارات</div>
+        <table class="car-table" id="carTable">
+            <thead>
+                <tr><th>#</th><th>السيارة</th><th>السائق</th><th>الركاب (أعضاء)</th><th>ملاحظات</th></tr>
+            </thead>
+            <tbody id="carTableBody">
+                <!-- سيتم توليدها ديناميكياً -->
+            </tbody>
+        </table>
+        <button class="add-btn no-print" id="addCarRowBtn" style="margin-top: 16px;"><i class="fas fa-plus"></i> إضافة سيارة</button>
+    </div>
+
+    <!-- الخصومات -->
+    <div class="card">
+        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> الخصومات (جماعية وفردية)</div>
+        <div class="discount-row">
+            <div class="input-group">
+                <label>النوع</label>
+                <select id="discountType">
+                    <option value="فردي">فردي</option>
+                    <option value="جماعي">جماعي</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>العضو / المجموعة</label>
+                <select id="discountTarget"></select>
+            </div>
+            <div class="input-group">
+                <label>المبلغ (جنيه)</label>
+                <input type="number" id="discountAmount" placeholder="0" min="0">
+            </div>
+            <div class="input-group">
+                <label>السبب</label>
+                <input type="text" id="discountReason" placeholder="سبب الخصم">
+            </div>
+            <button class="btn btn-outline btn-sm" id="addDiscountBtn" style="margin-bottom: 2px;"><i class="fas fa-plus"></i> إضافة خصم</button>
+        </div>
+        <div id="discountsList" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- زر المعاينة والتقرير -->
+    <div class="no-print" style="display: flex; gap: 16px; justify-content: flex-end; margin-bottom: 25px;">
+        <button class="btn btn-primary" id="previewReportBtn"><i class="fas fa-eye"></i> معاينة التقرير</button>
+    </div>
+
+    <!-- منطقة التقرير (لتصدير PDF) -->
+    <div id="reportContainer" style="display: none;">
+        <!-- سيتم توليد التقرير هنا -->
+    </div>
+</div>
+
+<script>
+    // ========== المتغيرات العامة ==========
+    let members = []; // {id, name, role}
+    let groups = [];  // {id, name, members: [{memberId, duty}], task, endDate}
+    let cars = [];    // {id, carName, driver, passengers, notes}
+    let discounts = []; // {id, type, target, amount, reason}
+
+    // عناصر DOM
+    const membersListEl = document.getElementById('membersList');
+    const groupsContainer = document.getElementById('groupsContainer');
+    const carTableBody = document.getElementById('carTableBody');
+    const discountsListEl = document.getElementById('discountsList');
+    const discountTargetSelect = document.getElementById('discountTarget');
+
+    // التاريخ الافتراضي
+    document.getElementById('workDate').valueAsDate = new Date();
+
+    // ========== إدارة الأعضاء ==========
+    function renderMembers() {
+        membersListEl.innerHTML = members.map(m => `
+            <div class="member-badge">
+                <i class="fas fa-user-circle"></i>
+                <span>${m.name}</span>
+                <span class="role-tag">${m.role}</span>
+                <i class="fas fa-times remove-member" data-id="${m.id}" style="margin-right: 8px;"></i>
+            </div>
+        `).join('');
+
+        // إضافة حدث الإزالة
+        document.querySelectorAll('.remove-member').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = Number(e.target.dataset.id);
+                members = members.filter(m => m.id !== id);
+                renderMembers();
+                renderGroups(); // تحديث المجموعات
+                updateDiscountTargets();
+            });
+        });
+    }
+
+    // إضافة عضو
+    document.getElementById('addMemberBtn').addEventListener('click', () => {
+        const name = document.getElementById('memberName').value.trim();
+        const role = document.getElementById('memberRole').value;
+        if (!name) return alert('أدخل اسم العضو');
+        members.push({ id: Date.now() + Math.random(), name, role });
+        document.getElementById('memberName').value = '';
+        renderMembers();
+        updateDiscountTargets();
+    });
+
+    // ========== إدارة المجموعات ==========
+    function renderGroups() {
+        if (groups.length === 0) {
+            groupsContainer.innerHTML = `<div style="text-align:center; color:#7d98b3; padding: 20px;">لم تضف مجموعات بعد. اضغط "إضافة مجموعة"</div>`;
+            return;
+        }
+
+        groupsContainer.innerHTML = groups.map((g, index) => {
+            const memberOptions = members.map(m => 
+                `<option value="${m.id}" ${g.members.some(gm => gm.memberId == m.id) ? 'disabled' : ''}>${m.name} (${m.role})</option>`
+            ).join('');
+
+            const assignedMembers = g.members.map(gm => {
+                const mem = members.find(m => m.id == gm.memberId);
+                if (!mem) return '';
+                return `
+                    <div class="member-chip">
+                        <span>${mem.name}</span>
+                        <input type="text" class="duty-input" data-group="${g.id}" data-member="${gm.memberId}" value="${gm.duty || ''}" placeholder="الدور" style="border:none; background:#fff; border-radius:20px; padding:4px 10px; width:110px; font-size:12px;">
+                        <i class="fas fa-times remove-from-group" data-group="${g.id}" data-member="${gm.memberId}" style="color:#b22234; cursor:pointer; opacity:0.6;"></i>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="group-card" data-group-id="${g.id}">
+                    <div class="group-header">
+                        <input type="text" class="group-name-input" value="${g.name}" placeholder="اسم المجموعة" data-group="${g.id}">
+                        <button class="btn btn-outline btn-sm delete-group" data-group="${g.id}" style="color:#b22234; border-color:#f0c0c0;"><i class="fas fa-trash-alt"></i> حذف</button>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                        <select class="add-member-to-group" data-group="${g.id}" style="padding:10px 14px; border-radius:20px; border:1.5px solid #dae5f0; background:#f9fcff; font-family:Cairo; font-weight:600;">
+                            <option value="">-- اختر عضو للإضافة --</option>
+                            ${memberOptions}
+                        </select>
+                        <button class="add-btn add-member-btn" data-group="${g.id}" style="padding:8px 16px;"><i class="fas fa-user-plus"></i> إضافة للمجموعة</button>
+                    </div>
+                    <div class="group-members-list" id="groupMembers-${g.id}">
+                        ${assignedMembers || '<span style="color:#9bb3cc;">لا يوجد أعضاء بعد</span>'}
+                    </div>
+                    <div class="flex-row" style="margin-top:18px;">
+                        <div class="input-group" style="flex:2;">
+                            <label><i class="fas fa-tasks"></i> المطلوب تنفيذه</label>
+                            <textarea class="group-task" data-group="${g.id}" rows="2" placeholder="وصف المهمة...">${g.task || ''}</textarea>
+                        </div>
+                        <div class="input-group" style="flex:1;">
+                            <label><i class="fas fa-calendar-check"></i> تاريخ الانتهاء</label>
+                            <input type="date" class="group-enddate" data-group="${g.id}" value="${g.endDate || ''}">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // ربط الأحداث
+        document.querySelectorAll('.group-name-input').forEach(inp => {
+            inp.addEventListener('input', (e) => {
+                const gid = Number(e.target.dataset.group);
+                const group = groups.find(g => g.id === gid);
+                if (group) group.name = e.target.value;
+            });
+        });
+
+        document.querySelectorAll('.group-task').forEach(ta => {
+            ta.addEventListener('input', (e) => {
+                const gid = Number(e.target.dataset.group);
+                const group = groups.find(g => g.id === gid);
+                if (group) group.task = e.target.value;
+            });
+        });
+
+        document.querySelectorAll('.group-enddate').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                const gid = Number(e.target.dataset.group);
+                const group = groups.find(g => g.id === gid);
+                if (group) group.endDate = e.target.value;
+            });
+        });
+
+        // إضافة عضو للمجموعة
+        document.querySelectorAll('.add-member-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const gid = Number(e.target.dataset.group);
+                const group = groups.find(g => g.id === gid);
+                const select = btn.previousElementSibling;
+                const memberId = select.value;
+                if (!memberId) return alert('اختر عضو');
+                if (group.members.some(gm => gm.memberId == memberId)) return alert('العضو موجود بالفعل');
+                group.members.push({ memberId: Number(memberId), duty: '' });
+                renderGroups();
+            });
+        });
+
+        // إزالة عضو من المجموعة
+        document.querySelectorAll('.remove-from-group').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const gid = Number(icon.dataset.group);
+                const memberId = Number(icon.dataset.member);
+                const group = groups.find(g => g.id === gid);
+                group.members = group.members.filter(gm => gm.memberId != memberId);
+                renderGroups();
+            });
+        });
+
+        // تعديل دور العضو
+        document.querySelectorAll('.duty-input').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                const gid = Number(inp.dataset.group);
+                const memberId = Number(inp.dataset.member);
+                const group = groups.find(g => g.id === gid);
+                const member = group.members.find(gm => gm.memberId == memberId);
+                if (member) member.duty = e.target.value;
+            });
+        });
+
+        // حذف مجموعة
+        document.querySelectorAll('.delete-group').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const gid = Number(btn.dataset.group);
+                groups = groups.filter(g => g.id !== gid);
+                renderGroups();
+                updateDiscountTargets();
+            });
+        });
+    }
+
+    // إضافة مجموعة جديدة
+    document.getElementById('addGroupBtn').addEventListener('click', () => {
+        groups.push({
+            id: Date.now() + Math.random(),
+            name: `مجموعة ${groups.length + 1}`,
+            members: [],
+            task: '',
+            endDate: ''
+        });
+        renderGroups();
+        updateDiscountTargets();
+    });
+
+    // ========== إدارة السيارات ==========
+    function renderCars() {
+        if (cars.length === 0) {
+            carTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#9bb3cc; padding:20px;">لا يوجد سيارات مضافة</td></tr>`;
+            return;
+        }
+
+        carTableBody.innerHTML = cars.map((car, idx) => {
+            const driverOptions = members.filter(m => m.role === 'سائق' || m.role === 'فني' || m.role === 'مشرف')
+                .map(m => `<option value="${m.id}" ${car.driver == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
+            
+            const passengerNames = car.passengers.map(pid => {
+                const p = members.find(m => m.id == pid);
+                return p ? p.name : '';
+            }).join('، ');
+
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><input type="text" class="car-name" data-car="${car.id}" value="${car.carName}" placeholder="رقم/اسم السيارة" style="width:120px; padding:8px; border-radius:12px; border:1px solid #dae5f0;"></td>
+                    <td>
+                        <select class="car-driver" data-car="${car.id}" style="padding:8px; border-radius:12px; border:1px solid #dae5f0;">
+                            <option value="">-- اختر --</option>
+                            ${driverOptions}
+                        </select>
+                    </td>
+                    <td><span style="font-size:13px;">${passengerNames || 'لا يوجد'}</span></td>
+                    <td><input type="text" class="car-notes" data-car="${car.id}" value="${car.notes || ''}" placeholder="ملاحظات" style="width:130px; padding:8px; border-radius:12px; border:1px solid #dae5f0;"></td>
+                </tr>
+            `;
+        }).join('');
+
+        // ربط الأحداث
+        document.querySelectorAll('.car-name').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                const cid = Number(inp.dataset.car);
+                const car = cars.find(c => c.id === cid);
+                if (car) car.carName = e.target.value;
+            });
+        });
+        document.querySelectorAll('.car-driver').forEach(sel => {
+            sel.addEventListener('change', (e) => {
+                const cid = Number(sel.dataset.car);
+                const car = cars.find(c => c.id === cid);
+                if (car) car.driver = e.target.value;
+            });
+        });
+        document.querySelectorAll('.car-notes').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                const cid = Number(inp.dataset.car);
+                const car = cars.find(c => c.id === cid);
+                if (car) car.notes = e.target.value;
+            });
+        });
+    }
+
+    // إضافة سيارة
+    document.getElementById('addCarRowBtn').addEventListener('click', () => {
+        cars.push({
+            id: Date.now() + Math.random(),
+            carName: '',
+            driver: '',
+            passengers: [],
+            notes: ''
+        });
+        renderCars();
+    });
+
+    // ========== إدارة الخصومات ==========
+    function updateDiscountTargets() {
+        const type = document.getElementById('discountType').value;
+        let options = '';
+        if (type === 'فردي') {
+            options = members.map(m => `<option value="member-${m.id}">${m.name} (${m.role})</option>`).join('');
+        } else {
+            options = groups.map(g => `<option value="group-${g.id}">${g.name}</option>`).join('');
+        }
+        discountTargetSelect.innerHTML = options;
+    }
+
+    document.getElementById('discountType').addEventListener('change', updateDiscountTargets);
+
+    function renderDiscounts() {
+        if (discounts.length === 0) {
+            discountsListEl.innerHTML = `<div style="color:#9bb3cc; text-align:center; padding:15px;">لا يوجد خصومات مسجلة</div>`;
+            return;
+        }
+
+        discountsListEl.innerHTML = discounts.map(d => {
+            let targetName = d.target;
+            if (d.target.startsWith('member-')) {
+                const id = Number(d.target.split('-')[1]);
+                const mem = members.find(m => m.id == id);
+                targetName = mem ? mem.name : 'غير معروف';
+            } else if (d.target.startsWith('group-')) {
+                const id = Number(d.target.split('-')[1]);
+                const grp = groups.find(g => g.id == id);
+                targetName = grp ? grp.name : 'غير معروف';
+            }
+
+            return `
+                <div style="display:flex; justify-content:space-between; background:#fef7f7; padding:12px 18px; border-radius:20px; border:1px solid #f5d0d0; margin-bottom:8px;">
+                    <div><strong>${d.type}</strong> - ${targetName} : ${d.amount} جنيه <span style="color:#a05a5a;">(${d.reason})</span></div>
+                    <i class="fas fa-trash-alt remove-discount" data-id="${d.id}" style="color:#b22234; cursor:pointer;"></i>
+                </div>
+            `;
+        }).join('');
+
+        document.querySelectorAll('.remove-discount').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = Number(btn.dataset.id);
+                discounts = discounts.filter(d => d.id !== id);
+                renderDiscounts();
+            });
+        });
+    }
+
+    document.getElementById('addDiscountBtn').addEventListener('click', () => {
+        const type = document.getElementById('discountType').value;
+        const target = discountTargetSelect.value;
+        const amount = parseFloat(document.getElementById('discountAmount').value) || 0;
+        const reason = document.getElementById('discountReason').value.trim();
+        if (!target || amount <= 0) return alert('أدخل بيانات الخصم بشكل صحيح');
+        discounts.push({ id: Date.now() + Math.random(), type, target, amount, reason });
+        document.getElementById('discountAmount').value = '';
+        document.getElementById('discountReason').value = '';
+        renderDiscounts();
+    });
+
+    // ========== التقرير النهائي ==========
+    function buildReportHTML() {
+        const date = document.getElementById('workDate').value;
+        const start = document.getElementById('startTime').value;
+        const end = document.getElementById('endTime').value;
+        const supervisor = document.getElementById('supervisorName').value || 'غير محدد';
+
+        // تحويل التاريخ لصيغة مقروءة
+        let dateFormatted = date;
+        if (date) {
+            const d = new Date(date);
+            dateFormatted = d.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // جدول المجموعات
+        let groupsHTML = '';
+        groups.forEach(g => {
+            const memberRows = g.members.map(gm => {
+                const mem = members.find(m => m.id == gm.memberId);
+                return mem ? `<div style="display:flex; gap:10px; padding:4px 0; border-bottom:1px dashed #eee;">
+                    <span style="font-weight:600; width:140px;">${mem.name}</span>
+                    <span style="color:#2a5a8a;">${mem.role}</span>
+                    <span style="color:#555;">${gm.duty || '—'}</span>
+                </div>` : '';
+            }).join('');
+
+            groupsHTML += `
+                <div style="border:1.5px solid #d0e0f0; border-radius:18px; padding:18px; margin-bottom:18px; background:#fafdff;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h3 style="color:#0b2b4f;">${g.name}</h3>
+                        <span style="background:#e6f0fa; padding:5px 16px; border-radius:30px; font-size:13px;">تاريخ الانتهاء: ${g.endDate || 'غير محدد'}</span>
+                    </div>
+                    <div style="margin-bottom:12px;"><i class="fas fa-tasks" style="color:#1d6fb8;"></i> <strong>المهمة:</strong> ${g.task || 'لم تحدد'}</div>
+                    <div style="background:#fff; padding:12px; border-radius:14px;">${memberRows || '<span style="color:#888;">لا يوجد أعضاء</span>'}</div>
+                </div>
+            `;
+        });
+
+        // جدول السيارات
+        let carsHTML = '';
+        if (cars.length > 0) {
+            carsHTML = `
+                <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                    <thead><tr style="background:#e6f0fa;"><th>#</th><th>السيارة</th><th>السائق</th><th>الركاب</th><th>ملاحظات</th></tr></thead>
+                    <tbody>
+                        ${cars.map((c, i) => {
+                            const driver = members.find(m => m.id == c.driver)?.name || '—';
+                            const passengers = c.passengers.map(pid => members.find(m => m.id == pid)?.name).filter(Boolean).join('، ') || '—';
+                            return `<tr style="border-bottom:1px solid #eee;">
+                                <td>${i+1}</td><td>${c.carName || '—'}</td><td>${driver}</td><td>${passengers}</td><td>${c.notes || ''}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        } else {
+            carsHTML = '<p style="color:#888;">لا يوجد سيارات مسجلة</p>';
+        }
+
+        // الخصومات
+        let discountsHTML = '';
+        if (discounts.length > 0) {
+            discountsHTML = discounts.map(d => {
+                let target = d.target;
+                if (d.target.startsWith('member-')) {
+                    const id = Number(d.target.split('-')[1]);
+                    target = members.find(m => m.id == id)?.name || d.target;
+                } else if (d.target.startsWith('group-')) {
+                    const id = Number(d.target.split('-')[1]);
+                    target = groups.find(g => g.id == id)?.name || d.target;
+                }
+                return `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0e0e0;">
+                    <span><strong>${d.type}</strong> - ${target}</span>
+                    <span>${d.amount} جنيه <span style="color:#a05252;">(${d.reason})</span></span>
+                </div>`;
+            }).join('');
+        } else {
+            discountsHTML = '<p style="color:#888;">لا يوجد خصومات</p>';
+        }
+
+        return `
+            <div style="font-family:'Cairo',sans-serif; padding:10px; max-width:1000px; margin:0 auto; direction:rtl;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #0b2b4f; padding-bottom:15px; margin-bottom:25px;">
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <i class="fas fa-bolt" style="font-size:40px; color:#0b2b4f;"></i>
+                        <div><h1 style="color:#0b2b4f; margin:0;">Circuit</h1><span style="color:#5e7a9a;">تقرير أعمال الكهرباء</span></div>
+                    </div>
+                    <div style="text-align:left;">
+                        <div style="font-weight:700;">التاريخ: ${dateFormatted}</div>
+                        <div>من ${start} إلى ${end}</div>
+                        <div>المشرف العام: ${supervisor}</div>
+                    </div>
+                </div>
+
+                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-users"></i> فريق العمل</h2>
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:25px;">
+                    ${members.map(m => `<span style="background:#eef5fd; padding:6px 18px; border-radius:30px; font-weight:600;">${m.name} (${m.role})</span>`).join('') || '<span>لا يوجد أعضاء</span>'}
+                </div>
+
+                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-layer-group"></i> المجموعات والمهام</h2>
+                ${groupsHTML || '<p>لا يوجد مجموعات</p>'}
+
+                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-car"></i> ترتيب السيارات</h2>
+                ${carsHTML}
+
+                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-exclamation-triangle"></i> الخصومات</h2>
+                ${discountsHTML}
+
+                <div style="margin-top:40px; text-align:center; color:#7a93af; border-top:1px solid #ddd; padding-top:15px; font-size:13px;">
+                    تم إنشاء التقرير بواسطة نظام Circuit — ${new Date().toLocaleDateString('ar-EG')}
+                </div>
+            </div>
+        `;
+    }
+
+    // معاينة التقرير
+    document.getElementById('previewReportBtn').addEventListener('click', () => {
+        const reportHTML = buildReportHTML();
+        const reportDiv = document.getElementById('reportContainer');
+        reportDiv.innerHTML = reportHTML;
+        reportDiv.style.display = 'block';
+        reportDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // تصدير PDF
+    document.getElementById('exportPdfBtn').addEventListener('click', () => {
+        const reportHTML = buildReportHTML();
+        const reportDiv = document.getElementById('reportContainer');
+        reportDiv.innerHTML = reportHTML;
+        reportDiv.style.display = 'block';
+
+        const element = reportDiv;
+        const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: `Circuit_تقرير_${document.getElementById('workDate').value || 'اليوم'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    });
+
+    // إعادة تعيين اليوم
+    document.getElementById('resetDayBtn').addEventListener('click', () => {
+        if (confirm('هل أنت متأكد من مسح جميع البيانات؟')) {
+            members = []; groups = []; cars = []; discounts = [];
+            renderMembers(); renderGroups(); renderCars(); renderDiscounts();
+            updateDiscountTargets();
+            document.getElementById('reportContainer').style.display = 'none';
+            document.getElementById('workDate').valueAsDate = new Date();
+            document.getElementById('startTime').value = '08:00';
+            document.getElementById('endTime').value = '17:00';
+            document.getElementById('supervisorName').value = '';
+        }
+    });
+
+    // ========== تهيئة أولية ==========
+    function init() {
+        // إضافة بعض البيانات التجريبية (اختياري)
+        if (members.length === 0) {
+            members.push({ id: 1, name: 'أحمد محمود', role: 'فني' });
+            members.push({ id: 2, name: 'محمد علي', role: 'مشرف' });
+            members.push({ id: 3, name: 'خالد حسن', role: 'مساعد' });
+            members.push({ id: 4, name: 'عمرو سيد', role: 'سائق' });
+            members.push({ id: 5, name: 'إبراهيم فؤاد', role: 'فني' });
+        }
+        renderMembers();
+        renderGroups();
+        renderCars();
+        renderDiscounts();
+        updateDiscountTargets();
+
+        // إضافة سيارة تجريبية
+        cars.push({ id: 101, carName: 'سيارة 1', driver: '4', passengers: [1, 3], notes: '' });
+        cars.push({ id: 102, carName: 'سيارة 2', driver: '', passengers: [2, 5], notes: '' });
+        renderCars();
+    }
+
+    init();
+</script>
+</body>
+</html>
