@@ -1,1013 +1,1941 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circuit | نظام إدارة أعمال الكهرباء اليومي</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts Cairo -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- html2pdf -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#1E1B4B" />
+<title>Circuit | نظام إدارة الأعمال الكهربائية</title>
 
-        body {
-            background: #f4f7fc;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        .app-container {
-            max-width: 1400px;
-            width: 100%;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0, 20, 50, 0.08);
-            padding: 30px 35px;
-            margin: 20px 0;
-            transition: 0.2s;
-        }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/cairo@latest/arabic-700-normal.css">
 
-        /* الهيدر */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #e9eef4;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.js.min.js"></script>
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .logo-icon {
-            background: #0b2b4f;
-            color: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 8px 14px rgba(11, 43, 79, 0.2);
-        }
-
-        .logo-text h1 {
-            font-size: 26px;
-            font-weight: 800;
-            color: #0b2b4f;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-text span {
-            font-size: 14px;
-            font-weight: 500;
-            color: #5e7a9a;
-            letter-spacing: 0.3px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 26px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 15px;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.2s;
-            background: white;
-            color: #1e3a5f;
-            border: 1.5px solid #d7e1ec;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
-        }
-
-        .btn-primary {
-            background: #0b2b4f;
-            color: white;
-            border: none;
-            box-shadow: 0 10px 18px -8px rgba(11, 43, 79, 0.4);
-        }
-
-        .btn-primary:hover {
-            background: #153e6b;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background: white;
-            border: 1.5px solid #cbd9e9;
-        }
-
-        .btn-outline:hover {
-            background: #f0f6ff;
-            border-color: #0b2b4f;
-        }
-
-        .btn-sm {
-            padding: 8px 18px;
-            font-size: 13px;
-            border-radius: 40px;
-        }
-
-        /* الأقسام */
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0b2b4f;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: #1d6fb8;
-            font-size: 22px;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #e2ebf5;
-            border-radius: 24px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.04);
-            transition: 0.2s;
-        }
-
-        .card:hover {
-            border-color: #c4d9f0;
-        }
-
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            align-items: flex-end;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-            flex: 1 1 200px;
-        }
-
-        .input-group label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c4b6e;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .input-group input, .input-group select, .input-group textarea {
-            padding: 13px 16px;
-            border: 1.5px solid #dae5f0;
-            border-radius: 18px;
-            font-size: 15px;
-            font-family: 'Cairo', sans-serif;
-            background: #f9fcff;
-            transition: 0.2s;
-            outline: none;
-            font-weight: 500;
-        }
-
-        .input-group input:focus, .input-group select:focus {
-            border-color: #0b2b4f;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(11, 43, 79, 0.06);
-        }
-
-        /* قوائم الأعضاء */
-        .members-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 8px;
-        }
-
-        .member-badge {
-            background: #eef5fd;
-            border-radius: 40px;
-            padding: 8px 20px 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            color: #14365c;
-            border: 1px solid #c8dcf2;
-            transition: 0.1s;
-        }
-
-        .member-badge i {
-            color: #1d6fb8;
-            font-size: 14px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        .member-badge .remove-member {
-            color: #b22234;
-            cursor: pointer;
-            font-size: 16px;
-            opacity: 0.6;
-            transition: 0.2s;
-        }
-
-        .member-badge .remove-member:hover {
-            opacity: 1;
-        }
-
-        .role-tag {
-            background: white;
-            padding: 2px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            color: #2b5d8a;
-            border: 1px solid #b8d0e9;
-        }
-
-        /* مجموعة العمل */
-        .group-card {
-            border: 2px solid #d1e2f5;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #fbfdff;
-        }
-
-        .group-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .group-name-input {
-            font-weight: 700;
-            font-size: 18px;
-            border: none;
-            background: transparent;
-            border-bottom: 2px dashed #aac4e0;
-            padding: 5px 8px;
-            color: #0b2b4f;
-            width: 200px;
-        }
-
-        .group-members-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 15px 0;
-            min-height: 45px;
-        }
-
-        .member-chip {
-            background: #e1eefb;
-            border-radius: 30px;
-            padding: 6px 18px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #b8d3ef;
-        }
-
-        .member-chip select {
-            border: none;
-            background: white;
-            border-radius: 30px;
-            padding: 3px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #0b2b4f;
-            border: 1px solid #c3d7ed;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        /* جدول السيارات */
-        .car-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 14px;
-        }
-
-        .car-table th {
-            background: #eef5fd;
-            padding: 14px 10px;
-            text-align: right;
-            font-weight: 700;
-            color: #1a3d61;
-            border-bottom: 2px solid #cfe0f0;
-        }
-
-        .car-table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #e6eef8;
-            vertical-align: middle;
-        }
-
-        /* الخصومات */
-        .discount-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: flex-end;
-            margin-bottom: 14px;
-        }
-
-        /* أزرار الإضافة */
-        .add-btn {
-            background: #e6f0fa;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 20px;
-            color: #0b2b4f;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .add-btn:hover {
-            background: #d0e3fa;
-        }
-
-        /* التقرير */
-        #report-preview {
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            margin-top: 20px;
-        }
-
-        /* للطباعة */
-        @media print {
-            body { background: white; padding: 0; }
-            .app-container { box-shadow: none; padding: 10px; }
-            .no-print { display: none !important; }
-            .card { break-inside: avoid; border: 1px solid #ccc; }
-        }
-
-        /* تجاوب */
-        @media (max-width: 700px) {
-            .app-container { padding: 18px; }
-            .app-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="app-container" id="appContainer">
-    <!-- الهيدر -->
-    <div class="app-header">
-        <div class="logo-area">
-            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
-            <div class="logo-text">
-                <h1>Circuit</h1>
-                <span>إدارة أعمال الكهرباء اليومية</span>
-            </div>
-        </div>
-        <div class="header-actions no-print">
-            <button class="btn btn-outline" id="resetDayBtn"><i class="fas fa-undo-alt"></i> يوم جديد</button>
-            <button class="btn btn-primary" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> تصدير PDF</button>
-        </div>
-    </div>
-
-    <!-- التاريخ والبيانات الأساسية -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-calendar-alt"></i> بيانات اليوم</div>
-        <div class="flex-row">
-            <div class="input-group">
-                <label><i class="fas fa-calendar"></i> التاريخ</label>
-                <input type="date" id="workDate">
-            </div>
-            <div class="input-group">
-                <label><i class="fas fa-clock"></i> بداية العمل</label>
-                <input type="time" id="startTime" value="08:00">
-            </div>
-            <div class="input-group">
-                <label><i class="fas fa-clock"></i> نهاية العمل</label>
-                <input type="time" id="endTime" value="17:00">
-            </div>
-            <div class="input-group">
-                <label><i class="fas fa-user-tie"></i> مشرف عام اليوم</label>
-                <input type="text" id="supervisorName" placeholder="اسم المشرف العام">
-            </div>
-        </div>
-    </div>
-
-    <!-- إضافة الأعضاء (فنيين، مشرفين، مساعدين) -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-users"></i> فريق العمل</div>
-        <div class="flex-row">
-            <div class="input-group">
-                <label>اسم العضو</label>
-                <input type="text" id="memberName" placeholder="الاسم الثلاثي">
-            </div>
-            <div class="input-group">
-                <label>الدور</label>
-                <select id="memberRole">
-                    <option value="فني">فني كهرباء</option>
-                    <option value="مشرف">مشرف</option>
-                    <option value="مساعد">مساعد</option>
-                    <option value="سائق">سائق</option>
-                </select>
-            </div>
-            <button class="btn btn-outline btn-sm" id="addMemberBtn" style="margin-bottom: 2px;"><i class="fas fa-plus"></i> إضافة</button>
-        </div>
-        <div class="members-grid" id="membersList"></div>
-    </div>
-
-    <!-- تكوين المجموعات -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-layer-group"></i> مجموعات العمل والمهام</div>
-        <div id="groupsContainer"></div>
-        <button class="add-btn no-print" id="addGroupBtn"><i class="fas fa-plus-circle"></i> إضافة مجموعة جديدة</button>
-    </div>
-
-    <!-- ترتيب السيارات -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-car"></i> ترتيب السيارات</div>
-        <table class="car-table" id="carTable">
-            <thead>
-                <tr><th>#</th><th>السيارة</th><th>السائق</th><th>الركاب (أعضاء)</th><th>ملاحظات</th></tr>
-            </thead>
-            <tbody id="carTableBody">
-                <!-- سيتم توليدها ديناميكياً -->
-            </tbody>
-        </table>
-        <button class="add-btn no-print" id="addCarRowBtn" style="margin-top: 16px;"><i class="fas fa-plus"></i> إضافة سيارة</button>
-    </div>
-
-    <!-- الخصومات -->
-    <div class="card">
-        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> الخصومات (جماعية وفردية)</div>
-        <div class="discount-row">
-            <div class="input-group">
-                <label>النوع</label>
-                <select id="discountType">
-                    <option value="فردي">فردي</option>
-                    <option value="جماعي">جماعي</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>العضو / المجموعة</label>
-                <select id="discountTarget"></select>
-            </div>
-            <div class="input-group">
-                <label>المبلغ (جنيه)</label>
-                <input type="number" id="discountAmount" placeholder="0" min="0">
-            </div>
-            <div class="input-group">
-                <label>السبب</label>
-                <input type="text" id="discountReason" placeholder="سبب الخصم">
-            </div>
-            <button class="btn btn-outline btn-sm" id="addDiscountBtn" style="margin-bottom: 2px;"><i class="fas fa-plus"></i> إضافة خصم</button>
-        </div>
-        <div id="discountsList" style="margin-top: 20px;"></div>
-    </div>
-
-    <!-- زر المعاينة والتقرير -->
-    <div class="no-print" style="display: flex; gap: 16px; justify-content: flex-end; margin-bottom: 25px;">
-        <button class="btn btn-primary" id="previewReportBtn"><i class="fas fa-eye"></i> معاينة التقرير</button>
-    </div>
-
-    <!-- منطقة التقرير (لتصدير PDF) -->
-    <div id="reportContainer" style="display: none;">
-        <!-- سيتم توليد التقرير هنا -->
-    </div>
-</div>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-    // ========== المتغيرات العامة ==========
-    let members = []; // {id, name, role}
-    let groups = [];  // {id, name, members: [{memberId, duty}], task, endDate}
-    let cars = [];    // {id, carName, driver, passengers, notes}
-    let discounts = []; // {id, type, target, amount, reason}
-
-    // عناصر DOM
-    const membersListEl = document.getElementById('membersList');
-    const groupsContainer = document.getElementById('groupsContainer');
-    const carTableBody = document.getElementById('carTableBody');
-    const discountsListEl = document.getElementById('discountsList');
-    const discountTargetSelect = document.getElementById('discountTarget');
-
-    // التاريخ الافتراضي
-    document.getElementById('workDate').valueAsDate = new Date();
-
-    // ========== إدارة الأعضاء ==========
-    function renderMembers() {
-        membersListEl.innerHTML = members.map(m => `
-            <div class="member-badge">
-                <i class="fas fa-user-circle"></i>
-                <span>${m.name}</span>
-                <span class="role-tag">${m.role}</span>
-                <i class="fas fa-times remove-member" data-id="${m.id}" style="margin-right: 8px;"></i>
-            </div>
-        `).join('');
-
-        // إضافة حدث الإزالة
-        document.querySelectorAll('.remove-member').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = Number(e.target.dataset.id);
-                members = members.filter(m => m.id !== id);
-                renderMembers();
-                renderGroups(); // تحديث المجموعات
-                updateDiscountTargets();
-            });
-        });
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { 'cairo': ['Cairo', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: {
+            50: '#F5F3FF',
+            100: '#EDE9FE',
+            200: '#DDD6FE',
+            300: '#C4B5FD',
+            400: '#A78BFA',
+            500: '#8B5CF6',
+            600: '#7C3AED',
+            700: '#6D28D9',
+            800: '#5B21B6',
+            900: '#4C1D95',
+            950: '#2E1065',
+            dark: '#0F0A1F',
+            darker: '#070412',
+            surface: '#1A1333',
+            surfaceLight: '#2A1F4A',
+          }
+        },
+        animation: {
+          'fade-in': 'fadeIn 0.4s ease-out',
+          'slide-up': 'slideUp 0.4s ease-out',
+          'scale-in': 'scaleIn 0.3s ease-out',
+        },
+        keyframes: {
+          fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+          slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+          scaleIn: { '0%': { opacity: '0', transform: 'scale(0.95)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
+        }
+      }
     }
-
-    // إضافة عضو
-    document.getElementById('addMemberBtn').addEventListener('click', () => {
-        const name = document.getElementById('memberName').value.trim();
-        const role = document.getElementById('memberRole').value;
-        if (!name) return alert('أدخل اسم العضو');
-        members.push({ id: Date.now() + Math.random(), name, role });
-        document.getElementById('memberName').value = '';
-        renderMembers();
-        updateDiscountTargets();
-    });
-
-    // ========== إدارة المجموعات ==========
-    function renderGroups() {
-        if (groups.length === 0) {
-            groupsContainer.innerHTML = `<div style="text-align:center; color:#7d98b3; padding: 20px;">لم تضف مجموعات بعد. اضغط "إضافة مجموعة"</div>`;
-            return;
-        }
-
-        groupsContainer.innerHTML = groups.map((g, index) => {
-            const memberOptions = members.map(m => 
-                `<option value="${m.id}" ${g.members.some(gm => gm.memberId == m.id) ? 'disabled' : ''}>${m.name} (${m.role})</option>`
-            ).join('');
-
-            const assignedMembers = g.members.map(gm => {
-                const mem = members.find(m => m.id == gm.memberId);
-                if (!mem) return '';
-                return `
-                    <div class="member-chip">
-                        <span>${mem.name}</span>
-                        <input type="text" class="duty-input" data-group="${g.id}" data-member="${gm.memberId}" value="${gm.duty || ''}" placeholder="الدور" style="border:none; background:#fff; border-radius:20px; padding:4px 10px; width:110px; font-size:12px;">
-                        <i class="fas fa-times remove-from-group" data-group="${g.id}" data-member="${gm.memberId}" style="color:#b22234; cursor:pointer; opacity:0.6;"></i>
-                    </div>
-                `;
-            }).join('');
-
-            return `
-                <div class="group-card" data-group-id="${g.id}">
-                    <div class="group-header">
-                        <input type="text" class="group-name-input" value="${g.name}" placeholder="اسم المجموعة" data-group="${g.id}">
-                        <button class="btn btn-outline btn-sm delete-group" data-group="${g.id}" style="color:#b22234; border-color:#f0c0c0;"><i class="fas fa-trash-alt"></i> حذف</button>
-                    </div>
-                    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
-                        <select class="add-member-to-group" data-group="${g.id}" style="padding:10px 14px; border-radius:20px; border:1.5px solid #dae5f0; background:#f9fcff; font-family:Cairo; font-weight:600;">
-                            <option value="">-- اختر عضو للإضافة --</option>
-                            ${memberOptions}
-                        </select>
-                        <button class="add-btn add-member-btn" data-group="${g.id}" style="padding:8px 16px;"><i class="fas fa-user-plus"></i> إضافة للمجموعة</button>
-                    </div>
-                    <div class="group-members-list" id="groupMembers-${g.id}">
-                        ${assignedMembers || '<span style="color:#9bb3cc;">لا يوجد أعضاء بعد</span>'}
-                    </div>
-                    <div class="flex-row" style="margin-top:18px;">
-                        <div class="input-group" style="flex:2;">
-                            <label><i class="fas fa-tasks"></i> المطلوب تنفيذه</label>
-                            <textarea class="group-task" data-group="${g.id}" rows="2" placeholder="وصف المهمة...">${g.task || ''}</textarea>
-                        </div>
-                        <div class="input-group" style="flex:1;">
-                            <label><i class="fas fa-calendar-check"></i> تاريخ الانتهاء</label>
-                            <input type="date" class="group-enddate" data-group="${g.id}" value="${g.endDate || ''}">
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        // ربط الأحداث
-        document.querySelectorAll('.group-name-input').forEach(inp => {
-            inp.addEventListener('input', (e) => {
-                const gid = Number(e.target.dataset.group);
-                const group = groups.find(g => g.id === gid);
-                if (group) group.name = e.target.value;
-            });
-        });
-
-        document.querySelectorAll('.group-task').forEach(ta => {
-            ta.addEventListener('input', (e) => {
-                const gid = Number(e.target.dataset.group);
-                const group = groups.find(g => g.id === gid);
-                if (group) group.task = e.target.value;
-            });
-        });
-
-        document.querySelectorAll('.group-enddate').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                const gid = Number(e.target.dataset.group);
-                const group = groups.find(g => g.id === gid);
-                if (group) group.endDate = e.target.value;
-            });
-        });
-
-        // إضافة عضو للمجموعة
-        document.querySelectorAll('.add-member-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const gid = Number(e.target.dataset.group);
-                const group = groups.find(g => g.id === gid);
-                const select = btn.previousElementSibling;
-                const memberId = select.value;
-                if (!memberId) return alert('اختر عضو');
-                if (group.members.some(gm => gm.memberId == memberId)) return alert('العضو موجود بالفعل');
-                group.members.push({ memberId: Number(memberId), duty: '' });
-                renderGroups();
-            });
-        });
-
-        // إزالة عضو من المجموعة
-        document.querySelectorAll('.remove-from-group').forEach(icon => {
-            icon.addEventListener('click', (e) => {
-                const gid = Number(icon.dataset.group);
-                const memberId = Number(icon.dataset.member);
-                const group = groups.find(g => g.id === gid);
-                group.members = group.members.filter(gm => gm.memberId != memberId);
-                renderGroups();
-            });
-        });
-
-        // تعديل دور العضو
-        document.querySelectorAll('.duty-input').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                const gid = Number(inp.dataset.group);
-                const memberId = Number(inp.dataset.member);
-                const group = groups.find(g => g.id === gid);
-                const member = group.members.find(gm => gm.memberId == memberId);
-                if (member) member.duty = e.target.value;
-            });
-        });
-
-        // حذف مجموعة
-        document.querySelectorAll('.delete-group').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const gid = Number(btn.dataset.group);
-                groups = groups.filter(g => g.id !== gid);
-                renderGroups();
-                updateDiscountTargets();
-            });
-        });
-    }
-
-    // إضافة مجموعة جديدة
-    document.getElementById('addGroupBtn').addEventListener('click', () => {
-        groups.push({
-            id: Date.now() + Math.random(),
-            name: `مجموعة ${groups.length + 1}`,
-            members: [],
-            task: '',
-            endDate: ''
-        });
-        renderGroups();
-        updateDiscountTargets();
-    });
-
-    // ========== إدارة السيارات ==========
-    function renderCars() {
-        if (cars.length === 0) {
-            carTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#9bb3cc; padding:20px;">لا يوجد سيارات مضافة</td></tr>`;
-            return;
-        }
-
-        carTableBody.innerHTML = cars.map((car, idx) => {
-            const driverOptions = members.filter(m => m.role === 'سائق' || m.role === 'فني' || m.role === 'مشرف')
-                .map(m => `<option value="${m.id}" ${car.driver == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
-            
-            const passengerNames = car.passengers.map(pid => {
-                const p = members.find(m => m.id == pid);
-                return p ? p.name : '';
-            }).join('، ');
-
-            return `
-                <tr>
-                    <td>${idx + 1}</td>
-                    <td><input type="text" class="car-name" data-car="${car.id}" value="${car.carName}" placeholder="رقم/اسم السيارة" style="width:120px; padding:8px; border-radius:12px; border:1px solid #dae5f0;"></td>
-                    <td>
-                        <select class="car-driver" data-car="${car.id}" style="padding:8px; border-radius:12px; border:1px solid #dae5f0;">
-                            <option value="">-- اختر --</option>
-                            ${driverOptions}
-                        </select>
-                    </td>
-                    <td><span style="font-size:13px;">${passengerNames || 'لا يوجد'}</span></td>
-                    <td><input type="text" class="car-notes" data-car="${car.id}" value="${car.notes || ''}" placeholder="ملاحظات" style="width:130px; padding:8px; border-radius:12px; border:1px solid #dae5f0;"></td>
-                </tr>
-            `;
-        }).join('');
-
-        // ربط الأحداث
-        document.querySelectorAll('.car-name').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                const cid = Number(inp.dataset.car);
-                const car = cars.find(c => c.id === cid);
-                if (car) car.carName = e.target.value;
-            });
-        });
-        document.querySelectorAll('.car-driver').forEach(sel => {
-            sel.addEventListener('change', (e) => {
-                const cid = Number(sel.dataset.car);
-                const car = cars.find(c => c.id === cid);
-                if (car) car.driver = e.target.value;
-            });
-        });
-        document.querySelectorAll('.car-notes').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                const cid = Number(inp.dataset.car);
-                const car = cars.find(c => c.id === cid);
-                if (car) car.notes = e.target.value;
-            });
-        });
-    }
-
-    // إضافة سيارة
-    document.getElementById('addCarRowBtn').addEventListener('click', () => {
-        cars.push({
-            id: Date.now() + Math.random(),
-            carName: '',
-            driver: '',
-            passengers: [],
-            notes: ''
-        });
-        renderCars();
-    });
-
-    // ========== إدارة الخصومات ==========
-    function updateDiscountTargets() {
-        const type = document.getElementById('discountType').value;
-        let options = '';
-        if (type === 'فردي') {
-            options = members.map(m => `<option value="member-${m.id}">${m.name} (${m.role})</option>`).join('');
-        } else {
-            options = groups.map(g => `<option value="group-${g.id}">${g.name}</option>`).join('');
-        }
-        discountTargetSelect.innerHTML = options;
-    }
-
-    document.getElementById('discountType').addEventListener('change', updateDiscountTargets);
-
-    function renderDiscounts() {
-        if (discounts.length === 0) {
-            discountsListEl.innerHTML = `<div style="color:#9bb3cc; text-align:center; padding:15px;">لا يوجد خصومات مسجلة</div>`;
-            return;
-        }
-
-        discountsListEl.innerHTML = discounts.map(d => {
-            let targetName = d.target;
-            if (d.target.startsWith('member-')) {
-                const id = Number(d.target.split('-')[1]);
-                const mem = members.find(m => m.id == id);
-                targetName = mem ? mem.name : 'غير معروف';
-            } else if (d.target.startsWith('group-')) {
-                const id = Number(d.target.split('-')[1]);
-                const grp = groups.find(g => g.id == id);
-                targetName = grp ? grp.name : 'غير معروف';
-            }
-
-            return `
-                <div style="display:flex; justify-content:space-between; background:#fef7f7; padding:12px 18px; border-radius:20px; border:1px solid #f5d0d0; margin-bottom:8px;">
-                    <div><strong>${d.type}</strong> - ${targetName} : ${d.amount} جنيه <span style="color:#a05a5a;">(${d.reason})</span></div>
-                    <i class="fas fa-trash-alt remove-discount" data-id="${d.id}" style="color:#b22234; cursor:pointer;"></i>
-                </div>
-            `;
-        }).join('');
-
-        document.querySelectorAll('.remove-discount').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = Number(btn.dataset.id);
-                discounts = discounts.filter(d => d.id !== id);
-                renderDiscounts();
-            });
-        });
-    }
-
-    document.getElementById('addDiscountBtn').addEventListener('click', () => {
-        const type = document.getElementById('discountType').value;
-        const target = discountTargetSelect.value;
-        const amount = parseFloat(document.getElementById('discountAmount').value) || 0;
-        const reason = document.getElementById('discountReason').value.trim();
-        if (!target || amount <= 0) return alert('أدخل بيانات الخصم بشكل صحيح');
-        discounts.push({ id: Date.now() + Math.random(), type, target, amount, reason });
-        document.getElementById('discountAmount').value = '';
-        document.getElementById('discountReason').value = '';
-        renderDiscounts();
-    });
-
-    // ========== التقرير النهائي ==========
-    function buildReportHTML() {
-        const date = document.getElementById('workDate').value;
-        const start = document.getElementById('startTime').value;
-        const end = document.getElementById('endTime').value;
-        const supervisor = document.getElementById('supervisorName').value || 'غير محدد';
-
-        // تحويل التاريخ لصيغة مقروءة
-        let dateFormatted = date;
-        if (date) {
-            const d = new Date(date);
-            dateFormatted = d.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-
-        // جدول المجموعات
-        let groupsHTML = '';
-        groups.forEach(g => {
-            const memberRows = g.members.map(gm => {
-                const mem = members.find(m => m.id == gm.memberId);
-                return mem ? `<div style="display:flex; gap:10px; padding:4px 0; border-bottom:1px dashed #eee;">
-                    <span style="font-weight:600; width:140px;">${mem.name}</span>
-                    <span style="color:#2a5a8a;">${mem.role}</span>
-                    <span style="color:#555;">${gm.duty || '—'}</span>
-                </div>` : '';
-            }).join('');
-
-            groupsHTML += `
-                <div style="border:1.5px solid #d0e0f0; border-radius:18px; padding:18px; margin-bottom:18px; background:#fafdff;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h3 style="color:#0b2b4f;">${g.name}</h3>
-                        <span style="background:#e6f0fa; padding:5px 16px; border-radius:30px; font-size:13px;">تاريخ الانتهاء: ${g.endDate || 'غير محدد'}</span>
-                    </div>
-                    <div style="margin-bottom:12px;"><i class="fas fa-tasks" style="color:#1d6fb8;"></i> <strong>المهمة:</strong> ${g.task || 'لم تحدد'}</div>
-                    <div style="background:#fff; padding:12px; border-radius:14px;">${memberRows || '<span style="color:#888;">لا يوجد أعضاء</span>'}</div>
-                </div>
-            `;
-        });
-
-        // جدول السيارات
-        let carsHTML = '';
-        if (cars.length > 0) {
-            carsHTML = `
-                <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-                    <thead><tr style="background:#e6f0fa;"><th>#</th><th>السيارة</th><th>السائق</th><th>الركاب</th><th>ملاحظات</th></tr></thead>
-                    <tbody>
-                        ${cars.map((c, i) => {
-                            const driver = members.find(m => m.id == c.driver)?.name || '—';
-                            const passengers = c.passengers.map(pid => members.find(m => m.id == pid)?.name).filter(Boolean).join('، ') || '—';
-                            return `<tr style="border-bottom:1px solid #eee;">
-                                <td>${i+1}</td><td>${c.carName || '—'}</td><td>${driver}</td><td>${passengers}</td><td>${c.notes || ''}</td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody>
-                </table>
-            `;
-        } else {
-            carsHTML = '<p style="color:#888;">لا يوجد سيارات مسجلة</p>';
-        }
-
-        // الخصومات
-        let discountsHTML = '';
-        if (discounts.length > 0) {
-            discountsHTML = discounts.map(d => {
-                let target = d.target;
-                if (d.target.startsWith('member-')) {
-                    const id = Number(d.target.split('-')[1]);
-                    target = members.find(m => m.id == id)?.name || d.target;
-                } else if (d.target.startsWith('group-')) {
-                    const id = Number(d.target.split('-')[1]);
-                    target = groups.find(g => g.id == id)?.name || d.target;
-                }
-                return `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0e0e0;">
-                    <span><strong>${d.type}</strong> - ${target}</span>
-                    <span>${d.amount} جنيه <span style="color:#a05252;">(${d.reason})</span></span>
-                </div>`;
-            }).join('');
-        } else {
-            discountsHTML = '<p style="color:#888;">لا يوجد خصومات</p>';
-        }
-
-        return `
-            <div style="font-family:'Cairo',sans-serif; padding:10px; max-width:1000px; margin:0 auto; direction:rtl;">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #0b2b4f; padding-bottom:15px; margin-bottom:25px;">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <i class="fas fa-bolt" style="font-size:40px; color:#0b2b4f;"></i>
-                        <div><h1 style="color:#0b2b4f; margin:0;">Circuit</h1><span style="color:#5e7a9a;">تقرير أعمال الكهرباء</span></div>
-                    </div>
-                    <div style="text-align:left;">
-                        <div style="font-weight:700;">التاريخ: ${dateFormatted}</div>
-                        <div>من ${start} إلى ${end}</div>
-                        <div>المشرف العام: ${supervisor}</div>
-                    </div>
-                </div>
-
-                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-users"></i> فريق العمل</h2>
-                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:25px;">
-                    ${members.map(m => `<span style="background:#eef5fd; padding:6px 18px; border-radius:30px; font-weight:600;">${m.name} (${m.role})</span>`).join('') || '<span>لا يوجد أعضاء</span>'}
-                </div>
-
-                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-layer-group"></i> المجموعات والمهام</h2>
-                ${groupsHTML || '<p>لا يوجد مجموعات</p>'}
-
-                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-car"></i> ترتيب السيارات</h2>
-                ${carsHTML}
-
-                <h2 style="color:#0b2b4f; margin-bottom:15px;"><i class="fas fa-exclamation-triangle"></i> الخصومات</h2>
-                ${discountsHTML}
-
-                <div style="margin-top:40px; text-align:center; color:#7a93af; border-top:1px solid #ddd; padding-top:15px; font-size:13px;">
-                    تم إنشاء التقرير بواسطة نظام Circuit — ${new Date().toLocaleDateString('ar-EG')}
-                </div>
-            </div>
-        `;
-    }
-
-    // معاينة التقرير
-    document.getElementById('previewReportBtn').addEventListener('click', () => {
-        const reportHTML = buildReportHTML();
-        const reportDiv = document.getElementById('reportContainer');
-        reportDiv.innerHTML = reportHTML;
-        reportDiv.style.display = 'block';
-        reportDiv.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // تصدير PDF
-    document.getElementById('exportPdfBtn').addEventListener('click', () => {
-        const reportHTML = buildReportHTML();
-        const reportDiv = document.getElementById('reportContainer');
-        reportDiv.innerHTML = reportHTML;
-        reportDiv.style.display = 'block';
-
-        const element = reportDiv;
-        const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5],
-            filename: `Circuit_تقرير_${document.getElementById('workDate').value || 'اليوم'}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    });
-
-    // إعادة تعيين اليوم
-    document.getElementById('resetDayBtn').addEventListener('click', () => {
-        if (confirm('هل أنت متأكد من مسح جميع البيانات؟')) {
-            members = []; groups = []; cars = []; discounts = [];
-            renderMembers(); renderGroups(); renderCars(); renderDiscounts();
-            updateDiscountTargets();
-            document.getElementById('reportContainer').style.display = 'none';
-            document.getElementById('workDate').valueAsDate = new Date();
-            document.getElementById('startTime').value = '08:00';
-            document.getElementById('endTime').value = '17:00';
-            document.getElementById('supervisorName').value = '';
-        }
-    });
-
-    // ========== تهيئة أولية ==========
-    function init() {
-        // إضافة بعض البيانات التجريبية (اختياري)
-        if (members.length === 0) {
-            members.push({ id: 1, name: 'أحمد محمود', role: 'فني' });
-            members.push({ id: 2, name: 'محمد علي', role: 'مشرف' });
-            members.push({ id: 3, name: 'خالد حسن', role: 'مساعد' });
-            members.push({ id: 4, name: 'عمرو سيد', role: 'سائق' });
-            members.push({ id: 5, name: 'إبراهيم فؤاد', role: 'فني' });
-        }
-        renderMembers();
-        renderGroups();
-        renderCars();
-        renderDiscounts();
-        updateDiscountTargets();
-
-        // إضافة سيارة تجريبية
-        cars.push({ id: 101, carName: 'سيارة 1', driver: '4', passengers: [1, 3], notes: '' });
-        cars.push({ id: 102, carName: 'سيارة 2', driver: '', passengers: [2, 5], notes: '' });
-        renderCars();
-    }
-
-    init();
+  }
 </script>
+
+<style>
+  * { font-family: 'Cairo', system-ui, sans-serif; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: linear-gradient(135deg, #0F0A1F 0%, #1A1333 50%, #0F0A1F 100%);
+    color: #F8FAFC;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #1A1333; }
+  ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #8B5CF6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+  }
+
+  .glass {
+    background: rgba(26, 19, 51, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+  }
+
+  .accent-gradient {
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  }
+  .accent-gradient-soft {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(109, 40, 217, 0.15) 100%);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+  }
+
+  .pulse-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #22C55E;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 10px;
+    z-index: 9999;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .modal-backdrop {
+    background: rgba(7, 4, 18, 0.85);
+    backdrop-filter: blur(6px);
+  }
+
+  tbody tr:hover { background: rgba(139, 92, 246, 0.08); }
+
+  .signature-box {
+    border: 1px dashed #4C1D95;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 19, 51, 0.5);
+  }
+
+  .badge-high { background: #DC2626; color: white; }
+  .badge-medium { background: #F59E0B; color: white; }
+  .badge-low { background: #10B981; color: white; }
+
+  .card-hover { transition: all 0.3s ease; }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+
+  .tab-active {
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  }
+
+  .login-bg {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(109, 40, 217, 0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #0F0A1F 0%, #1A1333 100%);
+  }
+
+  .floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.3;
+    animation: float 8s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+  }
+
+  .print-header-purple {
+    background: linear-gradient(135deg, #6D28D9 0%, #4C1D95 100%);
+    color: white;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+    color: white;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  }
+
+  .btn-secondary {
+    background: rgba(139, 92, 246, 0.15);
+    color: #C4B5FD;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: rgba(139, 92, 246, 0.5);
+  }
+
+  .input-field {
+    background: rgba(15, 10, 31, 0.6);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    color: #F8FAFC;
+    transition: all 0.2s;
+  }
+  .input-field::placeholder { color: #6B7280; }
+
+  /* Attendance button */
+  .attendance-btn {
+    transition: all 0.2s;
+  }
+  .attendance-btn.checked {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    border-color: #10B981;
+  }
+</style>
+</head>
+<body class="font-cairo">
+
+<!-- ============== AUTH SCREEN ============== -->
+<div id="authScreen" class="min-h-screen login-bg flex items-center justify-center p-4 relative overflow-hidden">
+  <div class="floating-orb bg-brand-600 w-96 h-96 top-10 -right-20"></div>
+  <div class="floating-orb bg-brand-800 w-96 h-96 bottom-10 -left-20" style="animation-delay: 2s;"></div>
+
+  <div class="w-full max-w-md relative z-10 animate-scale-in">
+    <!-- Logo -->
+    <div class="text-center mb-6">
+      <div class="inline-flex w-20 h-20 rounded-2xl accent-gradient items-center justify-center glow-purple mb-4">
+        <svg class="w-11 h-11 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold text-white mb-1">Circuit</h1>
+      <p class="text-brand-300 text-sm">نظام إدارة الأعمال الكهربائية</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="glass rounded-2xl p-6 sm:p-8">
+      <!-- Auth Tabs -->
+      <div class="flex gap-2 mb-6 p-1 bg-brand-dark/50 rounded-xl">
+        <button id="loginTabBtn" onclick="switchAuthMode('login')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition tab-active">
+          تسجيل الدخول
+        </button>
+        <button id="registerTabBtn" onclick="switchAuthMode('register')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition text-brand-300">
+          حساب جديد
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-4" onsubmit="handleLogin(event)">
+        <div>
+          <label class="block text-xs text-brand-300 mb-1.5">البريد الإلكتروني</label>
+          <input type="email" id="loginEmail" required class="w-full input-field rounded-xl px-4 py-3 text-sm" placeholder="example@circuit.com">
+        </div>
+        <div>
+          <label class="block text-xs text-brand-300 mb-1.5">كلمة المرور</label>
+          <input type="password" id="loginPassword" required class="w-full input-field rounded-xl px-4 py-3 text-sm" placeholder="••••••••">
+        </div>
+        <button type="submit" id="loginBtn" class="w-full btn-primary py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+          <span>دخول</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="space-y-3 hidden" onsubmit="handleRegister(event)">
+        <div>
+          <label class="block text-xs text-brand-300 mb-1.5">الاسم الثلاثي <span class="text-red-400">*</span></label>
+          <input type="text" id="regFullName" required class="w-full input-field rounded-xl px-4 py-2.5 text-sm" placeholder="مثال: أحمد محمد علي">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-brand-300 mb-1.5">الوظيفة <span class="text-red-400">*</span></label>
+            <select id="regJobTitle" required class="w-full input-field rounded-xl px-3 py-2.5 text-sm">
+              <option value="">اختر...</option>
+              <option value="مهندس">مهندس</option>
+              <option value="مشرف">مشرف</option>
+              <option value="قائد مجموعة">قائد مجموعة</option>
+              <option value="صنيعي">صنيعي</option>
+              <option value="مساعد">مساعد</option>
+              <option value="سائق">سائق</option>
+              <option value="أمين مخزن">أمين مخزن</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-brand-300 mb-1.5">رقم الهاتف <span class="text-red-400">*</span></label>
+            <input type="tel" id="regPhone" required class="w-full input-field rounded-xl px-3 py-2.5 text-sm" placeholder="01xxxxxxxxx">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-brand-300 mb-1.5">البريد الإلكتروني <span class="text-red-400">*</span></label>
+          <input type="email" id="regEmail" required class="w-full input-field rounded-xl px-4 py-2.5 text-sm" placeholder="example@circuit.com">
+        </div>
+        <div>
+          <label class="block text-xs text-brand-300 mb-1.5">كلمة المرور <span class="text-red-400">*</span></label>
+          <input type="password" id="regPassword" required minlength="6" class="w-full input-field rounded-xl px-4 py-2.5 text-sm" placeholder="6 أحرف على الأقل">
+        </div>
+        <button type="submit" id="registerBtn" class="w-full btn-primary py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+          <span>إنشاء الحساب</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+        </button>
+      </form>
+
+      <div id="authError" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-xs"></div>
+    </div>
+
+    <p class="text-center text-xs text-brand-300 mt-6">© 2026 Circuit - جميع الحقوق محفوظة</p>
+  </div>
+</div>
+
+<!-- ============== MAIN APP ============== -->
+<div id="mainApp" class="hidden">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 glass border-b border-brand-900/50 shadow-lg no-print">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl accent-gradient flex items-center justify-center glow-purple">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h1 class="text-sm sm:text-lg font-bold text-white truncate">Circuit</h1>
+            <p class="text-[10px] sm:text-xs text-brand-300 truncate" id="headerRole">مرحباً</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="hidden md:flex items-center gap-2 text-xs text-brand-300">
+            <span class="pulse-dot"></span>
+            <span id="connectionStatus">متصل</span>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-brand-dark/50 rounded-lg border border-brand-900/50">
+            <div class="w-7 h-7 rounded-full accent-gradient flex items-center justify-center text-xs font-bold text-white" id="userAvatar">U</div>
+            <span class="text-xs text-brand-200 truncate max-w-[120px]" id="userName">المستخدم</span>
+          </div>
+          <button onclick="logout()" class="p-2 btn-secondary rounded-lg" title="خروج">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="border-t border-brand-900/50 bg-brand-dark/30">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6">
+        <nav class="tabs-scroll flex gap-1 overflow-x-auto no-scrollbar sm:overflow-visible py-2" id="tabsNav"></nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+
+    <!-- TAB 1: TOMORROW'S WORK PREP (Admin only) -->
+    <section id="tab-tomorrow" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">تجهيز شغل الغد</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">تخطيط المجموعات والمهام لليوم التالي</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printSection('tomorrowContent', 'تجهيز_شغل_الغد')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+          <button onclick="exportSheet('tomorrow')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="tomorrowContent" class="space-y-4">
+        <!-- Date & General Info -->
+        <div class="glass rounded-xl p-4 sm:p-6 card-hover">
+          <h3 class="text-base sm:text-lg font-bold text-brand-300 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            بيانات يوم العمل
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">التاريخ</label>
+              <input type="date" id="tomorrowDate" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" onchange="saveData()">
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">اسم المشروع</label>
+              <input type="text" id="tomorrowProject" placeholder="اسم المشروع" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" onchange="saveData()">
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">المشرف العام</label>
+              <input type="text" id="tomorrowSupervisor" placeholder="اسم المشرف" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" onchange="saveData()">
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">ملاحظات عامة</label>
+              <input type="text" id="tomorrowNotes" placeholder="ملاحظات" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" onchange="saveData()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Groups -->
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-brand-300 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              المجموعات
+            </h3>
+            <button onclick="openModal('groupModal')" class="btn-primary px-3 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              إضافة مجموعة
+            </button>
+          </div>
+          <div id="groupsContainer" class="space-y-3"></div>
+          <div id="groupsEmpty" class="text-center py-8 text-brand-400 text-sm">لا توجد مجموعات - اضغط "إضافة مجموعة" للبدء</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: ATTENDANCE -->
+    <section id="tab-attendance" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">سجل الحضور اليومي</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">تسجيل حضور الأفراد من قبل قائد المجموعة</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printSection('attendanceContent', 'كشف_الحضور')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+          <button onclick="exportSheet('attendance')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="attendanceContent" class="space-y-4">
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <div class="flex items-center gap-3 mb-4 flex-wrap">
+            <label class="text-xs text-brand-300">اختر المجموعة:</label>
+            <select id="attendanceGroupSelect" onchange="renderAttendance()" class="input-field rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]">
+              <option value="">-- اختر مجموعة --</option>
+            </select>
+          </div>
+          <div id="attendanceArea"></div>
+          <div id="attendanceEmpty" class="text-center py-8 text-brand-400 text-sm">اختر مجموعة لعرض أفرادها وتسجيل الحضور</div>
+        </div>
+
+        <!-- Required Equipment & Materials -->
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <h3 class="text-base sm:text-lg font-bold text-brand-300 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            المعدات والخامات المطلوبة لليوم
+          </h3>
+          <div class="flex items-center gap-3 mb-3 flex-wrap">
+            <select id="reqGroupSelect" onchange="renderRequirements()" class="input-field rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]">
+              <option value="">-- اختر مجموعة --</option>
+            </select>
+          </div>
+          <div id="requirementsArea"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DISCOUNTS -->
+    <section id="tab-discounts" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">الخصومات والجزاءات</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">سجل الخصومات اليومي - يظهر لجميع الموظفين</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printSection('discountsContent', 'تقرير_الخصومات')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+          <button onclick="exportSheet('discounts')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="discountsContent" class="space-y-4">
+        <!-- Admin Add Discount -->
+        <div id="adminDiscountAdd" class="glass rounded-xl p-4 sm:p-6 hidden">
+          <h3 class="text-base sm:text-lg font-bold text-brand-300 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            إضافة خصم جديد
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">الموظف</label>
+              <select id="discEmployee" class="w-full input-field rounded-lg px-3 py-2.5 text-sm">
+                <option value="">اختر...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">قيمة الخصم</label>
+              <select id="discAmount" class="w-full input-field rounded-lg px-3 py-2.5 text-sm">
+                <option value="ربع يوم">ربع يوم</option>
+                <option value="نصف يوم">نصف يوم</option>
+                <option value="ثلاثة أرباع يوم">ثلاثة أرباع يوم</option>
+                <option value="يوم كامل">يوم كامل</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">التاريخ</label>
+              <input type="date" id="discDate" class="w-full input-field rounded-lg px-3 py-2.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs text-brand-300 mb-1">السبب</label>
+              <input type="text" id="discReason" placeholder="سبب الخصم" class="w-full input-field rounded-lg px-3 py-2.5 text-sm">
+            </div>
+          </div>
+          <button onclick="addDiscount()" class="mt-3 btn-primary px-4 py-2 rounded-lg text-sm font-bold">إضافة الخصم</button>
+        </div>
+
+        <!-- Discounts List -->
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <h3 class="text-base sm:text-lg font-bold text-brand-300 mb-4">سجل الخصومات</h3>
+          <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+            <table class="w-full text-xs sm:text-sm">
+              <thead class="bg-brand-dark/50">
+                <tr>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">التاريخ</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">الموظف</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">الوظيفة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">السبب</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">القيمة</th>
+                  <th id="discActionsHeader" class="px-2 sm:px-3 py-2 text-center text-brand-300 font-bold whitespace-nowrap hidden">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="discountsTable" class="divide-y divide-brand-900/50"></tbody>
+            </table>
+          </div>
+          <div id="discountsEmpty" class="text-center py-8 text-brand-400 text-sm">لا توجد خصومات مسجلة</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: INVENTORY -->
+    <section id="tab-inventory" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">جرد المخزن</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">المعدات والخامات المطلوبة لكل مجموعة</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printInventoryReport('out')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">تقرير صرف</span>
+          </button>
+          <button onclick="printInventoryReport('in')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span class="hidden sm:inline">تقرير إدخال</span>
+          </button>
+          <button onclick="exportSheet('inventory')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="inventoryContent" class="space-y-4">
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-brand-300 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              المعدات والخامات المطلوبة
+            </h3>
+            <button id="addItemBtn" onclick="openModal('inventoryItemModal')" class="btn-primary px-3 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1 hidden">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              إضافة صنف
+            </button>
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+            <table class="w-full text-xs sm:text-sm">
+              <thead class="bg-brand-dark/50">
+                <tr>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">#</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">المجموعة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">اسم الصنف</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">النوع</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">العدد</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">ملاحظات</th>
+                  <th id="invActionsHeader" class="px-2 sm:px-3 py-2 text-center text-brand-300 font-bold whitespace-nowrap hidden">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTable" class="divide-y divide-brand-900/50"></tbody>
+            </table>
+          </div>
+          <div id="inventoryEmpty" class="text-center py-8 text-brand-400 text-sm">لا توجد أصناف مسجلة</div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع أمين المخزن</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع مدير المشروع</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: COMPLETED WORK -->
+    <section id="tab-work" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">الأعمال المنفذة</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">تقرير الإنجاز من قادة المجموعات</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printSection('workContent', 'تقرير_الاعمال_المنفذة')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+          <button onclick="exportSheet('work')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="workContent" class="space-y-4">
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-brand-300 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              سجل الأعمال المنجزة
+            </h3>
+            <button onclick="openModal('workModal')" class="btn-primary px-3 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              إضافة عمل
+            </button>
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+            <table class="w-full text-xs sm:text-sm">
+              <thead class="bg-brand-dark/50">
+                <tr>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">التاريخ</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">المجموعة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">قائد المجموعة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">وصف العمل المنجز</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">الموقع/الوحدة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">ملاحظات</th>
+                  <th class="px-2 sm:px-3 py-2 text-center text-brand-300 font-bold whitespace-nowrap">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="workTable" class="divide-y divide-brand-900/50"></tbody>
+            </table>
+          </div>
+          <div id="workEmpty" class="text-center py-8 text-brand-400 text-sm">لا توجد أعمال مسجلة</div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع قائد المجموعة</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع المهندس المشرف</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: ISSUES -->
+    <section id="tab-issues" class="tab-content hidden animate-fade-in">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-lg sm:text-2xl font-bold text-white">المشاكل والحلول</h2>
+          <p class="text-xs sm:text-sm text-brand-300 mt-1">تسجيل المعوقات والحلول المقترحة</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="printSection('issuesContent', 'تقرير_المشاكل')" class="px-3 py-2 btn-secondary rounded-lg text-xs sm:text-sm flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+          <button onclick="exportSheet('issues')" class="px-3 py-2 btn-primary rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Excel</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="issuesContent" class="space-y-4">
+        <div class="glass rounded-xl p-4 sm:p-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-brand-300 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              سجل المشاكل والحلول
+            </h3>
+            <button onclick="openModal('issueModal')" class="btn-primary px-3 py-2 rounded-lg text-xs sm:text-sm font-bold flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              تسجيل مشكلة
+            </button>
+          </div>
+          <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+            <table class="w-full text-xs sm:text-sm">
+              <thead class="bg-brand-dark/50">
+                <tr>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">التاريخ</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">المجموعة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">وصف المشكلة</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">الأولوية</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">الحل المقترح/المتخذ</th>
+                  <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">الحالة</th>
+                  <th class="px-2 sm:px-3 py-2 text-center text-brand-300 font-bold whitespace-nowrap">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="issuesTable" class="divide-y divide-brand-900/50"></tbody>
+            </table>
+          </div>
+          <div id="issuesEmpty" class="text-center py-8 text-brand-400 text-sm">لا توجد مشاكل مسجلة</div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع المهندس المشرف</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+            <div class="signature-box">
+              <div>
+                <p class="text-xs text-brand-300 mb-1">توقيع مدير المشروع</p>
+                <p class="text-sm text-brand-400">.....................</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="no-print border-t border-brand-900/50 mt-8 py-4">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 text-center">
+      <p class="text-xs text-brand-400">© 2026 <span class="text-brand-300 font-bold">Circuit</span> - نظام إدارة الأعمال الكهربائية | جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+</div>
+
+<!-- MODALS -->
+<div id="modalsContainer"></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+/* =========================================================
+   Circuit - Complete System
+========================================================= */
+
+// ============ FIREBASE ============
+const firebaseConfig = {
+  apiKey: "AIzaSyA-Mv_ig270NvNErFq_OidhUqhNyknHUzs",
+  authDomain: "circuit-co.firebaseapp.com",
+  projectId: "circuit-co",
+  storageBucket: "circuit-co.firebasestorage.app",
+  messagingSenderId: "892352811459",
+  appId: "1:892352811459:web:9ff21326db02184e1b2d76"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ============ STATE ============
+let currentUser = null;
+let currentUserProfile = null;
+let appData = {
+  tomorrow: { date: '', project: '', supervisor: '', notes: '', groups: [] },
+  attendance: {}, // { groupId: { memberId: { time, date } } }
+  requirements: [], // { groupId, itemName, type, quantity, notes }
+  discounts: [],
+  inventory: [],
+  work: [],
+  issues: [],
+  users: [] // cached users list
+};
+
+const STORAGE_KEY = 'circuit_app_v2';
+const SESSION_KEY = 'circuit_session_v2';
+
+// ============ AUTH ============
+function switchAuthMode(mode) {
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const loginBtn = document.getElementById('loginTabBtn');
+  const registerBtn = document.getElementById('registerTabBtn');
+  document.getElementById('authError').classList.add('hidden');
+
+  if (mode === 'login') {
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+    loginBtn.classList.add('tab-active');
+    loginBtn.classList.remove('text-brand-300');
+    registerBtn.classList.remove('tab-active');
+    registerBtn.classList.add('text-brand-300');
+  } else {
+    loginForm.classList.add('hidden');
+    registerForm.classList.remove('hidden');
+    registerBtn.classList.add('tab-active');
+    registerBtn.classList.remove('text-brand-300');
+    loginBtn.classList.remove('tab-active');
+    loginBtn.classList.add('text-brand-300');
+  }
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"></path></svg><span>جاري الإنشاء...</span>';
+
+  const fullName = document.getElementById('regFullName').value.trim();
+  const jobTitle = document.getElementById('regJobTitle').value;
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+
+  // Validate full name has at least 3 parts
+  const nameParts = fullName.split(/\s+/).filter(p => p.length > 0);
+  if (nameParts.length < 3) {
+    showAuthError('يرجى إدخال الاسم الثلاثي كاملاً');
+    btn.disabled = false;
+    btn.innerHTML = '<span>إنشاء الحساب</span>';
+    return;
+  }
+
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    const isAdmin = (jobTitle === 'مهندس' || jobTitle === 'مشرف');
+    const profile = {
+      uid: cred.user.uid,
+      fullName,
+      jobTitle,
+      phone,
+      email,
+      isAdmin,
+      role: isAdmin ? 'admin' : 'user',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await db.collection('users').doc(cred.user.uid).set(profile);
+    currentUserProfile = profile;
+    showToast('تم إنشاء الحساب بنجاح');
+    await enterApp();
+  } catch (err) {
+    showAuthError(translateFirebaseError(err.code));
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span>إنشاء الحساب</span>';
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" class="opacity-75"></path></svg><span>جاري الدخول...</span>';
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    await enterApp();
+  } catch (err) {
+    showAuthError(translateFirebaseError(err.code));
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span>دخول</span>';
+}
+
+function translateFirebaseError(code) {
+  const map = {
+    'auth/email-already-in-use': 'البريد الإلكتروني مسجل مسبقاً',
+    'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
+    'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل)',
+    'auth/user-not-found': 'المستخدم غير موجود',
+    'auth/wrong-password': 'كلمة المرور خاطئة',
+    'auth/invalid-credential': 'بيانات الدخول غير صحيحة',
+    'auth/too-many-requests': 'محاولات كثيرة، حاول لاحقاً'
+  };
+  return map[code] || 'حدث خطأ، حاول مرة أخرى';
+}
+
+async function enterApp() {
+  const user = auth.currentUser;
+  if (!user) return;
+  currentUser = user;
+
+  // Load profile
+  try {
+    const doc = await db.collection('users').doc(user.uid).get();
+    if (doc.exists) {
+      currentUserProfile = doc.data();
+    } else {
+      showToast('لم يتم العثور على الملف الشخصي', 'error');
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    showToast('خطأ في تحميل البيانات', 'error');
+    return;
+  }
+
+  // Save session
+  localStorage.setItem(SESSION_KEY, user.uid);
+
+  // Update UI
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('userName').textContent = currentUserProfile.fullName.split(' ')[0];
+  document.getElementById('userAvatar').textContent = currentUserProfile.fullName.charAt(0);
+  document.getElementById('headerRole').textContent = `${currentUserProfile.fullName} • ${currentUserProfile.jobTitle}`;
+
+  // Load all data
+  await loadAppData();
+  buildTabs();
+  renderAll();
+}
+
+async function logout() {
+  if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  await auth.signOut();
+  localStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// ============ DATA LOADING ============
+async function loadAppData() {
+  try {
+    // Load users list
+    const usersSnap = await db.collection('users').get();
+    appData.users = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Load project data
+    const dataDoc = await db.collection('projects').doc('main').get();
+    if (dataDoc.exists) {
+      const d = dataDoc.data();
+      appData = { ...appData, ...d };
+    }
+  } catch (e) {
+    console.error('Load error:', e);
+    // Fallback to local
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try { appData = { ...appData, ...JSON.parse(saved) }; } catch(e){}
+    }
+  }
+}
+
+async function saveData() {
+  // Collect tomorrow data
+  appData.tomorrow.date = document.getElementById('tomorrowDate')?.value || '';
+  appData.tomorrow.project = document.getElementById('tomorrowProject')?.value || '';
+  appData.tomorrow.supervisor = document.getElementById('tomorrowSupervisor')?.value || '';
+  appData.tomorrow.notes = document.getElementById('tomorrowNotes')?.value || '';
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+
+  if (currentUser) {
+    try {
+      await db.collection('projects').doc('main').set({
+        tomorrow: appData.tomorrow,
+        attendance: appData.attendance,
+        requirements: appData.requirements,
+        discounts: appData.discounts,
+        inventory: appData.inventory,
+        work: appData.work,
+        issues: appData.issues,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (e) {
+      console.error('Save error:', e);
+    }
+  }
+}
+
+// ============ TABS ============
+const TABS = [
+  { id: 'tomorrow', label: 'تجهيز الغد', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', adminOnly: true },
+  { id: 'attendance', label: 'الحضور', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+  { id: 'discounts', label: 'الخصومات', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { id: 'inventory', label: 'المخزن', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
+  { id: 'work', label: 'الأعمال المنفذة', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
+  { id: 'issues', label: 'المشاكل والحلول', icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' }
+];
+
+function buildTabs() {
+  const nav = document.getElementById('tabsNav');
+  const isAdmin = currentUserProfile?.isAdmin;
+  const visibleTabs = TABS.filter(t => !t.adminOnly || isAdmin);
+
+  nav.innerHTML = visibleTabs.map((t, i) => `
+    <button data-tab="${t.id}" class="tab-btn flex-shrink-0 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap ${i === 0 ? 'tab-active' : 'bg-brand-surface text-brand-200 hover:bg-brand-surfaceLight'}" onclick="switchTab('${t.id}')">
+      <span class="inline-flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${t.icon}"/></svg>
+        ${t.label}
+      </span>
+    </button>
+  `).join('');
+
+  // Show admin-only sections
+  if (isAdmin) {
+    document.getElementById('adminDiscountAdd').classList.remove('hidden');
+    document.getElementById('discActionsHeader').classList.remove('hidden');
+    document.getElementById('addItemBtn').classList.remove('hidden');
+    document.getElementById('invActionsHeader').classList.remove('hidden');
+  }
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('tab-active');
+    btn.classList.add('bg-brand-surface', 'text-brand-200');
+  });
+  document.getElementById('tab-' + tabId).classList.remove('hidden');
+  const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('tab-active');
+    activeBtn.classList.remove('bg-brand-surface', 'text-brand-200');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (tabId === 'attendance') populateGroupSelects();
+  if (tabId === 'discounts') populateDiscountEmployeeSelect();
+}
+
+// ============ TOAST ============
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  const colors = {
+    success: 'bg-green-500/20 border border-green-500/50 text-green-300',
+    error: 'bg-red-500/20 border border-red-500/50 text-red-300',
+    info: 'bg-brand-500/20 border border-brand-500/50 text-brand-200'
+  };
+  toast.className = `toast ${colors[type] || colors.success}`;
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// ============ MODAL SYSTEM ============
+const modals = {
+  groupModal: {
+    title: 'إضافة مجموعة جديدة',
+    fields: [
+      { name: 'name', label: 'اسم المجموعة', type: 'text', required: true, placeholder: 'مثال: المجموعة أ' },
+      { name: 'leaderId', label: 'قائد المجموعة', type: 'userSelect', required: true },
+      { name: 'location', label: 'مكان المشروع', type: 'text', required: true },
+      { name: 'shiftStart', label: 'بداية الشفت', type: 'time', required: true },
+      { name: 'shiftEnd', label: 'نهاية الشفت', type: 'time', required: true },
+      { name: 'date', label: 'التاريخ', type: 'date', required: true },
+      { name: 'vehicleNumber', label: 'رقم السيارة', type: 'text', required: true },
+      { name: 'members', label: 'الأعضاء (اختر من القائمة)', type: 'multiUserSelect' },
+      { name: 'notes', label: 'ملاحظات', type: 'textarea' }
+    ],
+    onSave: async (data) => {
+      const group = { id: Date.now(), ...data };
+      appData.tomorrow.groups.push(group);
+      await saveData();
+      renderGroups();
+      showToast('تم إضافة المجموعة');
+    }
+  },
+  inventoryItemModal: {
+    title: 'إضافة صنف للمخزن',
+    fields: [
+      { name: 'groupId', label: 'المجموعة', type: 'groupSelect', required: true },
+      { name: 'itemName', label: 'اسم الصنف', type: 'text', required: true },
+      { name: 'type', label: 'النوع', type: 'select', options: ['معدة', 'خامة', 'أداة'], required: true },
+      { name: 'quantity', label: 'العدد', type: 'number', required: true },
+      { name: 'notes', label: 'ملاحظات', type: 'textarea' }
+    ],
+    onSave: async (data) => {
+      appData.inventory.push({ id: Date.now(), ...data });
+      await saveData();
+      renderInventory();
+      showToast('تم إضافة الصنف');
+    }
+  },
+  workModal: {
+    title: 'تسجيل عمل منفذ',
+    fields: [
+      { name: 'date', label: 'التاريخ', type: 'date', required: true },
+      { name: 'groupId', label: 'المجموعة', type: 'groupSelect', required: true },
+      { name: 'leaderName', label: 'قائد المجموعة', type: 'text', required: true },
+      { name: 'description', label: 'وصف العمل المنجز', type: 'textarea', required: true },
+      { name: 'location', label: 'الموقع / الوحدة', type: 'text' },
+      { name: 'notes', label: 'ملاحظات', type: 'textarea' }
+    ],
+    onSave: async (data) => {
+      appData.work.push({ id: Date.now(), ...data });
+      await saveData();
+      renderWork();
+      showToast('تم تسجيل العمل');
+    }
+  },
+  issueModal: {
+    title: 'تسجيل مشكلة / معوق',
+    fields: [
+      { name: 'date', label: 'التاريخ', type: 'date', required: true },
+      { name: 'groupId', label: 'المجموعة', type: 'groupSelect' },
+      { name: 'description', label: 'وصف المشكلة', type: 'textarea', required: true },
+      { name: 'priority', label: 'الأولوية', type: 'select', options: ['عالية', 'متوسطة', 'منخفضة'], required: true },
+      { name: 'solution', label: 'الحل المقترح / المتخذ', type: 'textarea' },
+      { name: 'status', label: 'الحالة', type: 'select', options: ['قيد المعالجة', 'تم الحل', 'مؤجل'] }
+    ],
+    onSave: async (data) => {
+      appData.issues.push({ id: Date.now(), ...data });
+      await saveData();
+      renderIssues();
+      showToast('تم تسجيل المشكلة');
+    }
+  }
+};
+
+function openModal(modalId, editId = null) {
+  const modal = modals[modalId];
+  if (!modal) return;
+
+  let editData = null;
+  if (editId !== null) {
+    const collections = ['inventory', 'work', 'issues'];
+    for (const col of collections) {
+      const item = appData[col].find(i => i.id === editId);
+      if (item) { editData = item; break; }
+    }
+    if (editId && modalId === 'groupModal') {
+      editData = appData.tomorrow.groups.find(g => g.id === editId);
+    }
+    if (editData) modal.title = 'تعديل البيانات';
+  }
+
+  const fieldsHtml = modal.fields.map(f => {
+    const value = editData ? (editData[f.name] || '') : '';
+    let input = '';
+
+    if (f.type === 'userSelect') {
+      const users = appData.users || [];
+      input = `<select name="${f.name}" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" ${f.required ? 'required' : ''}>
+        <option value="">اختر...</option>
+        ${users.map(u => `<option value="${u.id}" ${value === u.id ? 'selected' : ''}>${escapeHtml(u.fullName)} - ${escapeHtml(u.jobTitle)}</option>`).join('')}
+      </select>`;
+    } else if (f.type === 'multiUserSelect') {
+      const users = appData.users || [];
+      const selectedArr = Array.isArray(value) ? value : [];
+      input = `<div class="space-y-2 max-h-48 overflow-y-auto border border-brand-900/50 rounded-lg p-2">
+        ${users.map(u => `
+          <label class="flex items-center gap-2 p-2 hover:bg-brand-dark/50 rounded cursor-pointer">
+            <input type="checkbox" name="${f.name}" value="${u.id}" ${selectedArr.includes(u.id) ? 'checked' : ''} class="w-4 h-4 accent-brand-600">
+            <span class="text-sm text-brand-100">${escapeHtml(u.fullName)}</span>
+            <span class="text-xs text-brand-400 mr-auto">${escapeHtml(u.jobTitle)}</span>
+          </label>
+        `).join('')}
+      </div>`;
+    } else if (f.type === 'groupSelect') {
+      const groups = appData.tomorrow.groups || [];
+      input = `<select name="${f.name}" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" ${f.required ? 'required' : ''}>
+        <option value="">اختر...</option>
+        ${groups.map(g => `<option value="${g.id}" ${String(value) === String(g.id) ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}
+      </select>`;
+    } else if (f.type === 'select') {
+      input = `<select name="${f.name}" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" ${f.required ? 'required' : ''}>
+        <option value="">اختر...</option>
+        ${f.options.map(o => `<option value="${o}" ${value === o ? 'selected' : ''}>${o}</option>`).join('')}
+      </select>`;
+    } else if (f.type === 'textarea') {
+      input = `<textarea name="${f.name}" rows="3" class="w-full input-field rounded-lg px-3 py-2.5 text-sm break-words" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''}>${escapeHtml(value)}</textarea>`;
+    } else {
+      input = `<input type="${f.type}" name="${f.name}" value="${escapeHtml(value)}" class="w-full input-field rounded-lg px-3 py-2.5 text-sm" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''}>`;
+    }
+    return `
+      <div>
+        <label class="block text-xs text-brand-300 mb-1">${f.label}${f.required ? ' <span class="text-red-400">*</span>' : ''}</label>
+        ${input}
+      </div>
+    `;
+  }).join('');
+
+  const html = `
+    <div class="modal-backdrop fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in" onclick="if(event.target===this)closeModal()">
+      <div class="glass rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto animate-slide-up">
+        <div class="sticky top-0 glass border-b border-brand-900/50 px-4 py-3 flex items-center justify-between">
+          <h3 class="text-base sm:text-lg font-bold text-brand-200">${modal.title}</h3>
+          <button onclick="closeModal()" class="p-2 hover:bg-brand-surfaceLight rounded-lg transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <form id="modalForm" class="p-4 space-y-3" onsubmit="handleModalSubmit(event, '${modalId}', ${editId || 'null'})">
+          ${fieldsHtml}
+          <div class="flex gap-2 pt-2">
+            <button type="submit" class="flex-1 btn-primary py-2.5 rounded-lg font-bold text-sm">حفظ</button>
+            <button type="button" onclick="closeModal()" class="px-4 py-2.5 btn-secondary rounded-lg text-sm">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalsContainer').innerHTML = html;
+}
+
+function closeModal() {
+  document.getElementById('modalsContainer').innerHTML = '';
+}
+
+async function handleModalSubmit(event, modalId, editId) {
+  event.preventDefault();
+  const form = event.target;
+  const data = {};
+
+  // Handle regular inputs
+  const formData = new FormData(form);
+  formData.forEach((v, k) => {
+    const field = modals[modalId].fields.find(f => f.name === k);
+    if (field && field.type === 'multiUserSelect') {
+      if (!data[k]) data[k] = [];
+      data[k].push(v);
+    } else {
+      data[k] = v;
+    }
+  });
+
+  // Handle unchecked multi-select checkboxes
+  modals[modalId].fields.filter(f => f.type === 'multiUserSelect').forEach(f => {
+    if (!data[f.name]) data[f.name] = [];
+  });
+
+  const modal = modals[modalId];
+  if (editId !== null) {
+    if (modalId === 'groupModal') {
+      const idx = appData.tomorrow.groups.findIndex(g => g.id === editId);
+      if (idx !== -1) appData.tomorrow.groups[idx] = { ...appData.tomorrow.groups[idx], ...data };
+    } else {
+      const collections = ['inventory', 'work', 'issues'];
+      for (const col of collections) {
+        const idx = appData[col].findIndex(i => i.id === editId);
+        if (idx !== -1) {
+          appData[col][idx] = { ...appData[col][idx], ...data };
+          break;
+        }
+      }
+    }
+    await saveData();
+    renderAll();
+    showToast('تم التحديث');
+  } else {
+    await modal.onSave(data);
+  }
+  closeModal();
+}
+
+async function deleteItem(collection, id) {
+  if (!confirm('هل أنت متأكد من الحذف؟')) return;
+  if (collection === 'groups') {
+    appData.tomorrow.groups = appData.tomorrow.groups.filter(g => g.id !== id);
+  } else {
+    appData[collection] = appData[collection].filter(i => i.id !== id);
+  }
+  await saveData();
+  renderAll();
+  showToast('تم الحذف', 'info');
+}
+
+// ============ RENDER ============
+function getUserById(uid) {
+  return appData.users.find(u => u.id === uid);
+}
+
+function getGroupById(gid) {
+  return appData.tomorrow.groups.find(g => String(g.id) === String(gid));
+}
+
+function renderGroups() {
+  const container = document.getElementById('groupsContainer');
+  const empty = document.getElementById('groupsEmpty');
+  const groups = appData.tomorrow.groups || [];
+
+  if (groups.length === 0) {
+    container.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  container.innerHTML = groups.map(g => {
+    const leader = getUserById(g.leaderId);
+    const members = (g.members || []).map(mid => getUserById(mid)).filter(Boolean);
+    return `
+      <div class="bg-brand-dark/40 border border-brand-900/50 rounded-xl p-4 card-hover">
+        <div class="flex items-start justify-between mb-3 flex-wrap gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <h4 class="text-base font-bold text-brand-200">${escapeHtml(g.name)}</h4>
+              <span class="px-2 py-0.5 bg-brand-700/30 text-brand-200 text-xs rounded-full">🚗 ${escapeHtml(g.vehicleNumber || '-')}</span>
+            </div>
+            <div class="text-xs text-brand-400 space-y-0.5">
+              <p>📍 ${escapeHtml(g.location || '-')}</p>
+              <p>🕐 ${escapeHtml(g.shiftStart || '')} - ${escapeHtml(g.shiftEnd || '')} | 📅 ${escapeHtml(g.date || '-')}</p>
+            </div>
+          </div>
+          ${currentUserProfile?.isAdmin ? `
+          <div class="flex gap-1">
+            <button onclick="openModal('groupModal', ${g.id})" class="p-1.5 text-brand-300 hover:bg-brand-500/20 rounded">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </button>
+            <button onclick="deleteItem('groups', ${g.id})" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+            </button>
+          </div>` : ''}
+        </div>
+        <div class="border-t border-brand-900/50 pt-3">
+          <p class="text-xs text-brand-400 mb-2">
+            👑 <span class="text-brand-200 font-bold">القائد:</span>
+            ${leader ? `${escapeHtml(leader.fullName)} <span class="text-brand-400">(${escapeHtml(leader.jobTitle)})</span>` : '<span class="text-red-400">غير محدد</span>'}
+          </p>
+          <p class="text-xs text-brand-400 mb-1">👥 <span class="text-brand-200 font-bold">الأعضاء (${members.length}):</span></p>
+          <div class="flex flex-wrap gap-1.5 mt-1">
+            ${members.length === 0 ? '<span class="text-xs text-brand-500">لا يوجد أعضاء</span>' :
+              members.map(m => `
+                <span class="inline-flex items-center gap-1 px-2 py-1 bg-brand-surface rounded-lg text-xs">
+                  <span class="text-brand-100">${escapeHtml(m.fullName)}</span>
+                  <span class="text-brand-400">(${escapeHtml(m.jobTitle)})</span>
+                </span>
+              `).join('')
+            }
+          </div>
+          ${g.notes ? `<p class="text-xs text-brand-400 mt-2 italic">💬 ${escapeHtml(g.notes)}</p>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function populateGroupSelects() {
+  const groups = appData.tomorrow.groups || [];
+  const options = '<option value="">-- اختر مجموعة --</option>' +
+    groups.map(g => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
+  document.getElementById('attendanceGroupSelect').innerHTML = options;
+  document.getElementById('reqGroupSelect').innerHTML = options;
+}
+
+function renderAttendance() {
+  const groupId = document.getElementById('attendanceGroupSelect').value;
+  const area = document.getElementById('attendanceArea');
+  const empty = document.getElementById('attendanceEmpty');
+
+  if (!groupId) {
+    area.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const group = getGroupById(groupId);
+  if (!group) return;
+
+  const leader = getUserById(group.leaderId);
+  const members = (group.members || []).map(mid => getUserById(mid)).filter(Boolean);
+
+  // Check if current user is the leader or admin
+  const isLeader = leader && leader.id === currentUser.uid;
+  const canMark = isLeader || currentUserProfile?.isAdmin;
+
+  const groupAttendance = appData.attendance[groupId] || {};
+
+  area.innerHTML = `
+    <div class="bg-brand-dark/40 border border-brand-900/50 rounded-xl p-4 mb-3">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+        <h4 class="text-base font-bold text-brand-200">${escapeHtml(group.name)}</h4>
+        <span class="text-xs text-brand-400">📍 ${escapeHtml(group.location)}</span>
+      </div>
+      <p class="text-xs text-brand-400">القائد: ${leader ? escapeHtml(leader.fullName) : '-'} | السيارة: ${escapeHtml(group.vehicleNumber || '-')}</p>
+    </div>
+
+    ${!canMark ? '<div class="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-300 text-xs mb-3">⚠️ فقط قائد المجموعة أو المدير يمكنه تسجيل الحضور</div>' : ''}
+
+    <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+      <table class="w-full text-xs sm:text-sm">
+        <thead class="bg-brand-dark/50">
+          <tr>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">#</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">الاسم</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">الوظيفة</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">وقت الحضور</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">التاريخ</th>
+            <th class="px-2 sm:px-3 py-2 text-center text-brand-300 font-bold whitespace-nowrap">تسجيل</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-brand-900/50">
+          ${members.map((m, i) => {
+            const rec = groupAttendance[m.id];
+            const checked = !!rec;
+            return `
+              <tr>
+                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">${i + 1}</td>
+                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(m.fullName)}</td>
+                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap text-brand-300">${escapeHtml(m.jobTitle)}</td>
+                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${rec ? escapeHtml(rec.time) : '-'}</td>
+                <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${rec ? escapeHtml(rec.date) : '-'}</td>
+                <td class="px-2 sm:px-3 py-2 text-center whitespace-nowrap">
+                  <button onclick="markAttendance('${groupId}', '${m.id}')" ${!canMark ? 'disabled' : ''}
+                    class="attendance-btn px-3 py-1.5 rounded-lg text-xs font-bold border ${checked ? 'checked' : 'border-brand-500/50 text-brand-300 hover:bg-brand-500/20'} ${!canMark ? 'opacity-50 cursor-not-allowed' : ''}">
+                    ${checked ? '✓ مسجل' : 'تسجيل حضور'}
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+    ${members.length === 0 ? '<p class="text-center py-6 text-brand-400 text-sm">لا يوجد أعضاء في هذه المجموعة</p>' : ''}
+  `;
+}
+
+async function markAttendance(groupId, memberId) {
+  if (!appData.attendance[groupId]) appData.attendance[groupId] = {};
+  const now = new Date();
+  const time = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  const date = now.toLocaleDateString('ar-EG');
+
+  if (appData.attendance[groupId][memberId]) {
+    if (!confirm('تم تسجيل حضور هذا العضو مسبقاً. هل تريد إعادة التسجيل؟')) return;
+  }
+
+  appData.attendance[groupId][memberId] = { time, date, timestamp: now.toISOString() };
+  await saveData();
+  renderAttendance();
+  showToast('تم تسجيل الحضور');
+}
+
+function renderRequirements() {
+  const groupId = document.getElementById('reqGroupSelect').value;
+  const area = document.getElementById('requirementsArea');
+  if (!groupId) {
+    area.innerHTML = '';
+    return;
+  }
+  const group = getGroupById(groupId);
+  const reqs = (appData.requirements || []).filter(r => String(r.groupId) === String(groupId));
+
+  if (reqs.length === 0) {
+    area.innerHTML = '<p class="text-center py-6 text-brand-400 text-sm">لا توجد متطلبات مسجلة لهذه المجموعة</p>';
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="overflow-x-auto rounded-lg border border-brand-900/50">
+      <table class="w-full text-xs sm:text-sm">
+        <thead class="bg-brand-dark/50">
+          <tr>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">#</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">الصنف</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">النوع</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold whitespace-nowrap">العدد</th>
+            <th class="px-2 sm:px-3 py-2 text-right text-brand-300 font-bold">ملاحظات</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-brand-900/50">
+          ${reqs.map((r, i) => `
+            <tr>
+              <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm">${i + 1}</td>
+              <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(r.itemName)}</td>
+              <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(r.type)}</td>
+              <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(r.quantity)}</td>
+              <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(r.notes || '-')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function populateDiscountEmployeeSelect() {
+  const select = document.getElementById('discEmployee');
+  if (!select) return;
+  const users = appData.users || [];
+  select.innerHTML = '<option value="">اختر...</option>' +
+    users.map(u => `<option value="${u.id}">${escapeHtml(u.fullName)} - ${escapeHtml(u.jobTitle)}</option>`).join('');
+  document.getElementById('discDate').value = new Date().toISOString().split('T')[0];
+}
+
+async function addDiscount() {
+  const empId = document.getElementById('discEmployee').value;
+  const amount = document.getElementById('discAmount').value;
+  const date = document.getElementById('discDate').value;
+  const reason = document.getElementById('discReason').value.trim();
+
+  if (!empId || !date || !reason) {
+    showToast('يرجى ملء جميع الحقول', 'error');
+    return;
+  }
+  const user = getUserById(empId);
+  appData.discounts.push({
+    id: Date.now(),
+    employeeId: empId,
+    employeeName: user?.fullName || '',
+    jobTitle: user?.jobTitle || '',
+    amount, date, reason,
+    addedBy: currentUser.uid,
+    createdAt: new Date().toISOString()
+  });
+  await saveData();
+  renderDiscounts();
+  document.getElementById('discReason').value = '';
+  showToast('تم إضافة الخصم');
+}
+
+function renderDiscounts() {
+  const tbody = document.getElementById('discountsTable');
+  const empty = document.getElementById('discountsEmpty');
+  const isAdmin = currentUserProfile?.isAdmin;
+
+  if (appData.discounts.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const sorted = [...appData.discounts].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  tbody.innerHTML = sorted.map(d => `
+    <tr>
+      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(d.date)}</td>
+      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(d.employeeName)}</td>
+      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap text-brand-300">${escapeHtml(d.jobTitle)}</td>
+      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(d.reason)}</td>
+      <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+        <span class="px-2 py-0.5 bg-red-500/20 text-red-300 border border-red-500/30 rounded-full text-xs font-bold">${escapeHtml(d.amount)}</span>
+      </td>
+      ${isAdmin ? `
+      <td class="px-2 sm:px-3 py-2 text-center whitespace-nowrap">
+        <button onclick="deleteDiscount(${d.id})" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+        </button>
+      </td>` : ''}
+    </tr>
+  `).join('');
+}
+
+async function deleteDiscount(id) {
+  if (!confirm('حذف الخصم؟')) return;
+  appData.discounts = appData.discounts.filter(d => d.id !== id);
+  await saveData();
+  renderDiscounts();
+  showToast('تم الحذف', 'info');
+}
+
+function renderInventory() {
+  const tbody = document.getElementById('inventoryTable');
+  const empty = document.getElementById('inventoryEmpty');
+  const isAdmin = currentUserProfile?.isAdmin;
+
+  if (appData.inventory.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = appData.inventory.map((item, i) => {
+    const group = getGroupById(item.groupId);
+    return `
+      <tr>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${i + 1}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${group ? escapeHtml(group.name) : '-'}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(item.itemName)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(item.type)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(item.quantity)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(item.notes || '-')}</td>
+        ${isAdmin ? `
+        <td class="px-2 sm:px-3 py-2 text-center whitespace-nowrap">
+          <button onclick="deleteItem('inventory', ${item.id})" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+          </button>
+        </td>` : ''}
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderWork() {
+  const tbody = document.getElementById('workTable');
+  const empty = document.getElementById('workEmpty');
+
+  if (appData.work.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = appData.work.map(w => {
+    const group = getGroupById(w.groupId);
+    return `
+      <tr>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(w.date)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${group ? escapeHtml(group.name) : '-'}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(w.leaderName)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(w.description)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(w.location || '-')}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(w.notes || '-')}</td>
+        <td class="px-2 sm:px-3 py-2 text-center whitespace-nowrap">
+          <button onclick="deleteItem('work', ${w.id})" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderIssues() {
+  const tbody = document.getElementById('issuesTable');
+  const empty = document.getElementById('issuesEmpty');
+
+  if (appData.issues.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = appData.issues.map(iss => {
+    const group = getGroupById(iss.groupId);
+    const badgeClass = iss.priority === 'عالية' ? 'badge-high' : iss.priority === 'متوسطة' ? 'badge-medium' : 'badge-low';
+    return `
+      <tr>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(iss.date)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${group ? escapeHtml(group.name) : '-'}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(iss.description)}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap"><span class="px-2 py-0.5 rounded text-xs ${badgeClass}">${escapeHtml(iss.priority)}</span></td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm break-words">${escapeHtml(iss.solution || '-')}</td>
+        <td class="px-2 sm:px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${escapeHtml(iss.status || '-')}</td>
+        <td class="px-2 sm:px-3 py-2 text-center whitespace-nowrap">
+          <button onclick="deleteItem('issues', ${iss.id})" class="p-1.5 text-red-400 hover:bg-red-500/20 rounded">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderTomorrowFields() {
+  document.getElementById('tomorrowDate').value = appData.tomorrow.date || '';
+  document.getElementById('tomorrowProject').value = appData.tomorrow.project || '';
+  document.getElementById('tomorrowSupervisor').value = appData.tomorrow.supervisor || '';
+  document.getElementById('tomorrowNotes').value = appData.tomorrow.notes || '';
+}
+
+function renderAll() {
+  renderTomorrowFields();
+  renderGroups();
+  renderDiscounts();
+  renderInventory();
+  renderWork();
+  renderIssues();
+}
+
+// ============ UTILITIES ============
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[m]));
+}
+
+// ============ EXPORT EXCEL ============
+function exportSheet(type) {
+  if (typeof XLSX === 'undefined') { showToast('مكتبة XLSX غير متاحة', 'error'); return; }
+  const wb = XLSX.utils.book_new();
+  const today = new Date().toISOString().split('T')[0];
+
+  if (type === 'tomorrow') {
+    const rows = [
+      ['تجهيز شغل الغد'],
+      ['التاريخ', appData.tomorrow.date],
+      ['المشروع', appData.tomorrow.project],
+      ['المشرف', appData.tomorrow.supervisor],
+      [],
+      ['المجموعات'],
+      ['اسم المجموعة', 'القائد', 'الموقع', 'بداية الشفت', 'نهاية الشفت', 'التاريخ', 'رقم السيارة', 'الأعضاء'],
+      ...appData.tomorrow.groups.map(g => {
+        const leader = getUserById(g.leaderId);
+        const members = (g.members || []).map(mid => getUserById(mid)?.fullName).filter(Boolean).join('، ');
+        return [g.name, leader?.fullName || '', g.location, g.shiftStart, g.shiftEnd, g.date, g.vehicleNumber, members];
+      })
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'تجهيز الغد');
+  } else if (type === 'attendance') {
+    const rows = [['كشف الحضور'], []];
+    appData.tomorrow.groups.forEach(g => {
+      rows.push(['مجموعة: ' + g.name]);
+      rows.push(['الاسم', 'الوظيفة', 'وقت الحضور', 'التاريخ']);
+      const groupAtt = appData.attendance[g.id] || {};
+      (g.members || []).forEach(mid => {
+        const u = getUserById(mid);
+        const rec = groupAtt[mid];
+        rows.push([u?.fullName || '', u?.jobTitle || '', rec?.time || '-', rec?.date || '-']);
+      });
+      rows.push([]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'الحضور');
+  } else if (type === 'discounts') {
+    const rows = [
+      ['سجل الخصومات'],
+      ['التاريخ', 'الموظف', 'الوظيفة', 'السبب', 'القيمة'],
+      ...appData.discounts.map(d => [d.date, d.employeeName, d.jobTitle, d.reason, d.amount])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'الخصومات');
+  } else if (type === 'inventory') {
+    const rows = [
+      ['جرد المخزن'],
+      ['#', 'المجموعة', 'الصنف', 'النوع', 'العدد', 'ملاحظات'],
+      ...appData.inventory.map((item, i) => {
+        const g = getGroupById(item.groupId);
+        return [i + 1, g?.name || '', item.itemName, item.type, item.quantity, item.notes];
+      })
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'المخزن');
+  } else if (type === 'work') {
+    const rows = [
+      ['الأعمال المنفذة'],
+      ['التاريخ', 'المجموعة', 'القائد', 'وصف العمل', 'الموقع', 'ملاحظات'],
+      ...appData.work.map(w => {
+        const g = getGroupById(w.groupId);
+        return [w.date, g?.name || '', w.leaderName, w.description, w.location, w.notes];
+      })
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'الأعمال');
+  } else if (type === 'issues') {
+    const rows = [
+      ['المشاكل والحلول'],
+      ['التاريخ', 'المجموعة', 'الوصف', 'الأولوية', 'الحل', 'الحالة'],
+      ...appData.issues.map(iss => {
+        const g = getGroupById(iss.groupId);
+        return [iss.date, g?.name || '', iss.description, iss.priority, iss.solution, iss.status];
+      })
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, 'المشاكل');
+  }
+
+  XLSX.writeFile(wb, `Circuit_${type}_${today}.xlsx`);
+  showToast('تم التصدير إلى Excel');
+}
+
+// ============ PRINT / PDF ============
+function buildPrintHeader(title) {
+  const today = new Date().toLocaleDateString('ar-EG');
+  const project = appData.tomorrow.project || 'المشروع';
+  return `
+    <div style="background: linear-gradient(135deg, #6D28D9 0%, #4C1D95 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+        <div style="width: 60px; height: 60px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg style="width: 35px; height: 35px;" fill="#6D28D9" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+        </div>
+        <div>
+          <h1 style="font-size: 22px; font-weight: bold; margin: 0;">شركة Circuit لتنفيذ الأعمال الكهربائية</h1>
+          <p style="font-size: 13px; margin: 4px 0 0 0; opacity: 0.9;">${title}</p>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-around; padding-top: 12px; border-top: 2px solid rgba(255,255,255,0.2); font-size: 12px;">
+        <span><strong>المشروع:</strong> ${escapeHtml(project)}</span>
+        <span><strong>التاريخ:</strong> ${today}</span>
+        <span><strong>المشرف:</strong> ${escapeHtml(appData.tomorrow.supervisor || '-')}</span>
+      </div>
+    </div>
+  `;
+}
+
+function buildSignatureBoxes(boxes) {
+  return `
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px dashed #6D28D9;">
+      <h3 style="color: #4C1D95; font-size: 14px; margin-bottom: 15px; text-align: center;">التوقيعات</h3>
+      <div style="display: grid; grid-template-columns: repeat(${boxes.length}, 1fr); gap: 15px;">
+        ${boxes.map(b => `
+          <div style="border: 1px dashed #6D28D9; border-radius: 8px; padding: 15px; text-align: center; min-height: 80px; background: #F5F3FF;">
+            <p style="color: #4C1D95; font-size: 12px; font-weight: bold; margin: 0 0 25px 0;">${b}</p>
+            <p style="color: #6B7280; font-size: 11px; margin: 0;">التوقيع: .....................</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function printSection(elementId, title) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  const signatures = {
+    'تجهيز_شغل_الغد': ['المهندس المشرف', 'مدير المشروع'],
+    'كشف_الحضور': ['قائد المجموعة', 'المهندس المشرف', 'مدير المشروع'],
+    'تقرير_الخصومات': ['المهندس المشرف', 'مدير المشروع'],
+    'تقرير_الاعمال_المنفذة': ['قائد المجموعة', 'المهندس المشرف', 'مدير المشروع'],
+    'تقرير_المشاكل': ['المهندس المشرف', 'مدير المشروع']
+  };
+
+  const printContainer = document.createElement('div');
+  printContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:white;color:black;z-index:9999;padding:20px;direction:rtl;font-family:Cairo,sans-serif;';
+
+  const sigBoxes = signatures[title] || ['المهندس المشرف', 'مدير المشروع'];
+
+  printContainer.innerHTML = `
+    ${buildPrintHeader(title)}
+    <div style="color: black; padding: 10px;">
+      ${element.innerHTML}
+    </div>
+    ${buildSignatureBoxes(sigBoxes)}
+  `;
+
+  document.body.appendChild(printContainer);
+
+  if (typeof html2pdf !== 'undefined') {
+    html2pdf().set({
+      margin: 10,
+      filename: `${title}_${new Date().toISOString().split('T')[0]}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(printContainer).save().then(() => {
+      document.body.removeChild(printContainer);
+      showToast('تم إنشاء ملف PDF');
+    });
+  } else {
+    window.print();
+    setTimeout(() => document.body.removeChild(printContainer), 1000);
+  }
+}
+
+function printInventoryReport(type) {
+  const title = type === 'out' ? 'تقرير صرف من المخزن' : 'تقرير إدخال للمخزن';
+  const printContainer = document.createElement('div');
+  printContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:white;color:black;z-index:9999;padding:20px;direction:rtl;font-family:Cairo,sans-serif;';
+
+  const today = new Date().toLocaleDateString('ar-EG');
+  const rows = appData.inventory.map((item, i) => {
+    const g = getGroupById(item.groupId);
+    return `<tr>
+      <td style="border:1px solid #4C1D95;padding:8px;">${i + 1}</td>
+      <td style="border:1px solid #4C1D95;padding:8px;">${escapeHtml(g?.name || '-')}</td>
+      <td style="border:1px solid #4C1D95;padding:8px;">${escapeHtml(item.itemName)}</td>
+      <td style="border:1px solid #4C1D95;padding:8px;">${escapeHtml(item.type)}</td>
+      <td style="border:1px solid #4C1D95;padding:8px;">${escapeHtml(item.quantity)}</td>
+      <td style="border:1px solid #4C1D95;padding:8px;">${escapeHtml(item.notes || '-')}</td>
+    </tr>`;
+  }).join('');
+
+  printContainer.innerHTML = `
+    ${buildPrintHeader(title)}
+    <div style="padding: 10px;">
+      <h2 style="color: #4C1D95; font-size: 16px; margin-bottom: 15px;">بيانات ${type === 'out' ? 'الصرف' : 'الإدخال'}</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background: #6D28D9; color: white;">
+            <th style="border:1px solid #4C1D95;padding:8px;">#</th>
+            <th style="border:1px solid #4C1D95;padding:8px;">المجموعة</th>
+            <th style="border:1px solid #4C1D95;padding:8px;">الصنف</th>
+            <th style="border:1px solid #4C1D95;padding:8px;">النوع</th>
+            <th style="border:1px solid #4C1D95;padding:8px;">العدد</th>
+            <th style="border:1px solid #4C1D95;padding:8px;">ملاحظات</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    ${buildSignatureBoxes(['أمين المخزن', 'المهندس المشرف', 'مدير المشروع'])}
+  `;
+
+  document.body.appendChild(printContainer);
+  if (typeof html2pdf !== 'undefined') {
+    html2pdf().set({
+      margin: 10,
+      filename: `${title}_${new Date().toISOString().split('T')[0]}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(printContainer).save().then(() => {
+      document.body.removeChild(printContainer);
+      showToast('تم إنشاء التقرير');
+    });
+  }
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check session
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      await enterApp();
+    } else {
+      document.getElementById('authScreen').classList.remove('hidden');
+      document.getElementById('mainApp').classList.add('hidden');
+    }
+  });
+});
+
+window.addEventListener('beforeunload', () => {
+  if (currentUser) saveData();
+});
+</script>
+
 </body>
 </html>
